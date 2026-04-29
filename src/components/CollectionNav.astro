@@ -1,0 +1,37 @@
+---
+interface Props {
+  active?: "disco-del-mes" | "ediciones-especiales" | "preventas" | "accesorios"
+}
+const { active } = Astro.props
+
+const items = [
+  { slug: "disco-del-mes", label: "Discos del Mes", href: "/collections/disco-del-mes" },
+  { slug: "ediciones-especiales", label: "Ediciones Especiales", href: "/collections/ediciones-especiales" },
+  { slug: "preventas", label: "Preventas", href: "/collections/preventas" },
+  { slug: "accesorios", label: "Accesorios", href: "/collections/accesorios" },
+] as const
+---
+
+<nav
+  aria-label="Colecciones"
+  class="border-y border-foreground/15 bg-foreground text-background"
+>
+  <div class="mx-auto grid max-w-7xl grid-cols-2 md:grid-cols-4">
+    {
+      items.map((item) => (
+        <a
+          href={item.href}
+          class:list={[
+            "group relative flex items-center justify-center px-4 py-5 text-center font-display text-sm uppercase tracking-tight transition-colors md:py-7 md:text-base",
+            "border-b border-background/10 md:border-b-0 md:[&:not(:last-child)]:border-r md:[&:not(:last-child)]:border-background/10",
+            active === item.slug
+              ? "bg-accent text-accent-foreground"
+              : "hover:bg-accent/15",
+          ]}
+        >
+          <span class="hand-underline">{item.label}</span>
+        </a>
+      ))
+    }
+  </div>
+</nav>

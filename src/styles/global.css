@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --font-display: "Caprasimo", "Georgia", serif;
+  --font-sans: "DM Sans", system-ui, -apple-system, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, monospace;
+}
+
+:root {
+  /* warm hand-painted paper cream */
+  --background: oklch(0.945 0.035 85);
+  --foreground: oklch(0.18 0.015 60);
+
+  --card: oklch(0.97 0.025 85);
+  --card-foreground: oklch(0.18 0.015 60);
+
+  --muted: oklch(0.88 0.025 80);
+  --muted-foreground: oklch(0.42 0.018 65);
+
+  --border: oklch(0.78 0.025 70);
+
+  /* deep cobalt blue from the logo's star */
+  --primary: oklch(0.42 0.16 255);
+  --primary-foreground: oklch(0.97 0.025 85);
+
+  /* warm rust red from the frog's toes */
+  --accent: oklch(0.55 0.18 30);
+  --accent-foreground: oklch(0.97 0.025 85);
+}
+
+@layer base {
+  html {
+    background-color: var(--background);
+  }
+  body {
+    font-family: var(--font-sans);
+    color: var(--foreground);
+    background-color: var(--background);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background-color: var(--foreground);
+    color: var(--background);
+  }
+}
+
+/* Paper grain texture using a tiny inline SVG */
+.paper-grain {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.16 0 0 0 0 0.13 0 0 0 0 0.10 0 0 0 0.06 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");
+  background-size: 160px 160px;
+}
+
+/* infinite horizontal marquee */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  animation: marquee 28s linear infinite;
+}
+.animate-marquee-fast {
+  animation: marquee 18s linear infinite;
+}
+
+/* slow rotation for the logo disc */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin-slow {
+  animation: spin-slow 30s linear infinite;
+}
+
+/* gentle float for the frog */
+@keyframes wobble {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(2px, -2px) rotate(1deg);
+  }
+  75% {
+    transform: translate(-2px, 1px) rotate(-1deg);
+  }
+}
+.animate-wobble {
+  animation: wobble 6s ease-in-out infinite;
+}
+
+/* hand-drawn underline using svg-like wavy stroke */
+.hand-underline {
+  position: relative;
+  display: inline-block;
+}
+.hand-underline::after {
+  content: "";
+  position: absolute;
+  left: -4px;
+  right: -4px;
+  bottom: -6px;
+  height: 8px;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 8' preserveAspectRatio='none'><path d='M0,4 Q25,0 50,4 T100,4 T150,4 T200,4' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'/></svg>")
+    repeat-x center / 200px 8px;
+}

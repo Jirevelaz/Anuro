@@ -1,0 +1,89 @@
+---
+const path = Astro.url.pathname
+const isActive = (href: string) =>
+  href === "/"
+    ? path === "/"
+    : path.startsWith(href)
+---
+
+<header class="sticky top-0 z-40 border-b border-foreground/10 bg-background/85 backdrop-blur-md">
+  <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-3 md:px-8 md:py-4">
+    <a href="/" class="flex items-center gap-3" aria-label="MURO — inicio">
+      <span class="relative block h-12 w-12 md:h-14 md:w-14">
+        <img
+          src="/images/muro-logo.png"
+          alt="MURO logo"
+          width="56"
+          height="56"
+          class="h-full w-full object-contain animate-wobble"
+          loading="eager"
+        />
+      </span>
+      <span class="hidden flex-col leading-none sm:flex">
+        <span class="font-display text-2xl tracking-tight">MURO</span>
+        <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+          Club de vinilos · MX
+        </span>
+      </span>
+    </a>
+
+    <nav class="hidden items-center gap-1 lg:flex" aria-label="Principal">
+      {
+        [
+          { href: "/blogs/news", label: "Bitácora" },
+          { href: "/collections/disco-del-mes", label: "Tienda" },
+          { href: "/pages/distribucion-y-mayoreo", label: "Distribución" },
+          { href: "/pages/planes", label: "Únete al Club" },
+        ].map((item) => (
+          <a
+            href={item.href}
+            class:list={[
+              "relative rounded-full px-4 py-2 font-sans text-sm transition-colors hover:text-foreground",
+              isActive(item.href)
+                ? "text-foreground"
+                : "text-muted-foreground",
+            ]}
+          >
+            {item.label}
+            {isActive(item.href) && (
+              <span class="absolute inset-x-3 -bottom-0.5 h-[2px] rounded-full bg-accent" />
+            )}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex items-center gap-1">
+      <button
+        type="button"
+        aria-label="Buscar"
+        class="grid h-10 w-10 place-items-center rounded-full text-foreground transition-colors hover:bg-foreground/5"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+      </button>
+      <a
+        href="/pages/planes"
+        aria-label="Mi cuenta"
+        class="grid h-10 w-10 place-items-center rounded-full text-foreground transition-colors hover:bg-foreground/5"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      </a>
+      <button
+        type="button"
+        aria-label="Wishlist"
+        class="relative grid h-10 w-10 place-items-center rounded-full text-foreground transition-colors hover:bg-foreground/5"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"></path></svg>
+        <span class="absolute -right-0.5 -top-0.5 grid h-4 w-4 place-items-center rounded-full bg-accent text-[10px] font-semibold text-accent-foreground">0</span>
+      </button>
+      <button
+        type="button"
+        aria-label="Carrito"
+        class="relative ml-1 grid h-10 w-10 place-items-center rounded-full text-foreground transition-colors hover:bg-foreground/5"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path></svg>
+        <span class="absolute -right-0.5 -top-0.5 grid h-4 w-4 place-items-center rounded-full bg-foreground text-[10px] font-semibold text-background">0</span>
+      </button>
+    </div>
+  </div>
+</header>

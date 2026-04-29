@@ -1,0 +1,33 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro"
+import CollectionNav from "../../components/CollectionNav.astro"
+import CollectionToolbar from "../../components/CollectionToolbar.astro"
+import ProductCard from "../../components/ProductCard.astro"
+import { collections } from "../../data/products"
+
+const c = collections.accesorios
+---
+
+<BaseLayout title={`${c.title} · MURO`} description={c.description}>
+  <CollectionNav active="accesorios" />
+
+  <section class="relative overflow-hidden border-b border-foreground/10 bg-card">
+    <div class="paper-grain absolute inset-0 opacity-40 pointer-events-none"></div>
+    <div class="relative mx-auto flex max-w-7xl flex-col gap-3 px-4 py-12 md:px-8 md:py-16">
+      <p class="font-mono text-xs uppercase tracking-[0.22em] text-muted-foreground">
+        Colección
+      </p>
+      <h1 class="font-display text-5xl leading-[0.95] tracking-tight md:text-6xl">
+        {c.title}
+      </h1>
+      <p class="max-w-2xl text-muted-foreground md:text-lg">{c.description}</p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-4 md:px-8">
+    <CollectionToolbar count={c.products.length} />
+    <div class="grid grid-cols-2 gap-x-5 gap-y-12 pb-16 md:grid-cols-4">
+      {c.products.map((p) => <ProductCard product={p} />)}
+    </div>
+  </section>
+</BaseLayout>

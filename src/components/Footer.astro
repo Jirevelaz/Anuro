@@ -1,0 +1,99 @@
+---
+const year = new Date().getFullYear()
+---
+
+<footer class="relative mt-24 border-t border-foreground/15 bg-foreground text-background">
+  <div class="paper-grain absolute inset-0 opacity-40 mix-blend-overlay pointer-events-none"></div>
+
+  <div class="relative mx-auto grid max-w-7xl gap-12 px-4 py-16 md:grid-cols-3 md:px-8">
+    <div class="space-y-5">
+      <div class="flex items-center gap-3">
+        <img
+          src="/images/muro-logo.png"
+          alt=""
+          width="56"
+          height="56"
+          class="h-14 w-14 object-contain invert-0"
+        />
+        <div class="flex flex-col leading-none">
+          <span class="font-display text-3xl tracking-tight">MURO</span>
+          <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-background/60">
+            Club de vinilos
+          </span>
+        </div>
+      </div>
+      <p class="max-w-xs text-sm leading-relaxed text-background/70">
+        Cuidamos los discos como cuida una rana las hojas: con paciencia, con paciencia y mucha música.
+      </p>
+      <div class="flex gap-2">
+        {
+          [
+            { label: "Instagram", icon: "instagram" },
+            { label: "Twitter", icon: "twitter" },
+            { label: "Facebook", icon: "facebook" },
+            { label: "Spotify", icon: "spotify" },
+          ].map((s) => (
+            <a
+              href="#"
+              aria-label={s.label}
+              class="grid h-10 w-10 place-items-center rounded-full border border-background/20 text-background/80 transition-colors hover:border-accent hover:text-accent"
+            >
+              <span class="font-mono text-[10px] uppercase">{s.icon[0]}</span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+
+    <div>
+      <h3 class="font-display text-lg uppercase tracking-tight">Boletín</h3>
+      <p class="mt-2 text-sm text-background/70">
+        Suscríbete y recibe primero las nuevas ediciones y preventas.
+      </p>
+      <form class="mt-5 flex w-full max-w-sm overflow-hidden rounded-full border border-background/20 bg-background/5">
+        <input
+          type="email"
+          required
+          placeholder="tu@correo.com"
+          class="flex-1 bg-transparent px-5 py-3 text-sm text-background outline-none placeholder:text-background/50"
+        />
+        <button
+          type="submit"
+          class="bg-accent px-5 text-sm font-semibold uppercase tracking-wide text-accent-foreground transition-colors hover:bg-accent/90"
+        >
+          Enviar
+        </button>
+      </form>
+    </div>
+
+    <div class="grid grid-cols-2 gap-8 text-sm">
+      <div>
+        <h3 class="mb-4 font-display text-lg uppercase tracking-tight">Información</h3>
+        <ul class="space-y-2.5 text-background/70">
+          <li><a href="#" class="transition-colors hover:text-background">Políticas de Venta</a></li>
+          <li><a href="#" class="transition-colors hover:text-background">Preguntas Frecuentes</a></li>
+          <li><a href="#" class="transition-colors hover:text-background">Aviso de Privacidad</a></li>
+          <li><a href="#" class="transition-colors hover:text-background">Términos y Condiciones</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="mb-4 font-display text-lg uppercase tracking-tight">Contacto</h3>
+        <ul class="space-y-2.5 text-background/70">
+          <li>WhatsApp · 871 1856718</li>
+          <li>info@muro.club</li>
+          <li>Ciudad de México</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="relative border-t border-background/15">
+    <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-5 text-xs text-background/60 md:flex-row md:items-center md:justify-between md:px-8">
+      <p>
+        <span class="text-accent">MURO</span>, {year}. Todos los derechos
+        reservados.
+      </p>
+      <p>Hecho a mano en CDMX · Diseño con cariño</p>
+    </div>
+  </div>
+</footer>

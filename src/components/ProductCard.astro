@@ -1,0 +1,104 @@
+---
+import type { Product } from "../data/products"
+import { formatPrice } from "../data/products"
+import { Image } from "astro:assets"
+
+interface Props {
+  product: Product
+}
+const { product } = Astro.props
+const isSoldOut = product.badges?.includes("AGOTADO")
+---
+
+<article class="group relative">
+  <div class="relative aspect-square overflow-hidden rounded-2xl bg-card">
+    {
+      product.badges && product.badges.length > 0 && (
+        <div class="pointer-events-none absolute left-3 top-3 z-10 flex flex-col gap-1.5">
+          {product.badges.map((b) => (
+            <span
+              class:list={[
+                "rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-wider",
+                b === "AGOTADO" && "bg-foreground text-background",
+                b === "PREVENTA" && "bg-foreground/85 text-background",
+                b === "1 POR PERSONA" && "bg-foreground text-background",
+                b === "NUEVO" && "bg-accent text-accent-foreground",
+              ]}
+            >
+              {b}
+            </span>
+          ))}
+        </div>
+      )
+    }
+
+    <button
+      type="button"
+      aria-label="Agregar a favoritos"
+      class="absolute right-3 top-3 z-10 grid h-9 w-9 place-items-center rounded-full bg-background/80 text-foreground opacity-0 backdrop-blur transition-all duration-300 hover:bg-background group-hover:opacity-100"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"></path></svg>
+    </button>
+
+    <Image
+      src={product.image}
+      alt={`${product.artist ? product.artist + " — " : ""}${product.title}`}
+      width="600"
+      height="600"
+      class:list={[
+        "h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]",
+        isSoldOut && "opacity-80",
+      ]}
+      loading="lazy"
+    />
+
+    {
+      !isSoldOut && (
+        <div class="pointer-events-none absolute inset-x-0 bottom-0 flex translate-y-2 justify-center p-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+          <button
+            type="button"
+            class="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-xs font-semibold uppercase tracking-wide text-background shadow-lg transition-transform hover:-translate-y-0.5"
+          >
+            Agregar al carrito
+          </button>
+        </div>
+      )
+    }
+  </div>
+
+  <div class="mt-4 space-y-1.5">
+    {
+      product.artist && (
+        <p class="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+          {product.artist}
+        </p>
+      )
+    }
+    <h3 class="font-display text-lg leading-snug text-balance">
+      <a href={`/productos/${product.slug}`} class="transition-colors hover:text-accent">{product.title}</a>
+    </h3>
+    <div class="flex flex-wrap items-baseline gap-x-2 pt-1">
+      <span class="font-display text-base">{formatPrice(product.price)}</span>
+      {
+        product.originalPrice && product.subscriberPrice && (
+          <span class="text-xs text-muted-foreground line-through">
+            {formatPrice(product.originalPrice)}
+          </span>
+        )
+      }
+    </div>
+    {
+      product.subscriberPrice && (
+        <p class="text-xs text-muted-foreground">
+          Precio suscriptor:{" "}
+          {product.originalPrice && (
+            <span class="line-through">{formatPrice(product.originalPrice)}</span>
+          )}{" "}
+          <span class="font-semibold text-accent">
+            {formatPrice(product.subscriberPrice)}
+          </span>
+        </p>
+      )
+    }
+  </div>
+</article>

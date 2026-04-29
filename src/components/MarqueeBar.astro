@@ -1,0 +1,36 @@
+---
+interface Props {
+  text?: string
+  href?: string
+  variant?: "primary" | "dark"
+}
+
+const {
+  text = "Únete al Club!",
+  href = "/pages/planes",
+  variant = "primary",
+} = Astro.props
+
+const items = Array.from({ length: 14 })
+
+const bg =
+  variant === "primary"
+    ? "bg-accent text-accent-foreground"
+    : "bg-foreground text-background"
+---
+
+<a
+  href={href}
+  class={`relative block overflow-hidden border-y border-foreground/10 ${bg}`}
+>
+  <div class="flex w-max animate-marquee py-2.5 will-change-transform">
+    {
+      [...items, ...items].map(() => (
+        <span class="flex shrink-0 items-center gap-6 px-6 font-display text-sm uppercase tracking-wide md:text-base">
+          <span>{text}</span>
+          <span aria-hidden="true" class="text-current/60">•</span>
+        </span>
+      ))
+    }
+  </div>
+</a>

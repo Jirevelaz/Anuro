@@ -1,0 +1,246 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro"
+
+const plans = [
+  {
+    name: "Mensual",
+    price: 920,
+    perMonth: null,
+    cadence: "/mes",
+    badge: null,
+    features: [
+      "1 Disco del Mes en vinilo",
+      "1 Ilustración exclusiva",
+      "1 Funda protectora",
+      "Gastos de envío incluidos",
+      "Descuentos en la tienda en línea",
+    ],
+  },
+  {
+    name: "Trimestral",
+    price: 2640,
+    perMonth: 880,
+    cadence: "/3 meses",
+    badge: "Más popular",
+    features: [
+      "3 Discos del Mes en vinilo",
+      "3 Ilustraciones exclusivas",
+      "3 Fundas protectoras",
+      "Envío incluido cada mes",
+      "Descuentos en la tienda en línea",
+    ],
+  },
+  {
+    name: "Semestral",
+    price: 4920,
+    perMonth: 820,
+    cadence: "/6 meses",
+    badge: "Mejor valor",
+    features: [
+      "6 Discos del Mes en vinilo",
+      "6 Ilustraciones exclusivas",
+      "6 Fundas protectoras",
+      "Envío incluido cada mes",
+      "Acceso anticipado a preventas",
+    ],
+  },
+  {
+    name: "Cliente Frecuente",
+    price: 149,
+    perMonth: null,
+    cadence: "/mes",
+    badge: null,
+    features: [
+      "Acceso a precios de suscriptor",
+      "Preventas exclusivas",
+      "Sin Disco del Mes incluido",
+      "Sin envío incluido",
+      "Cancela cuando quieras",
+    ],
+  },
+] as const
+
+const fmt = (n: number) =>
+  new Intl.NumberFormat("es-MX", {
+    style: "currency",
+    currency: "MXN",
+    maximumFractionDigits: 0,
+  }).format(n)
+---
+
+<BaseLayout
+  title="Únete al Club · MURO"
+  description="Selecciona el plan de tu preferencia y forma parte del club de vinilos MURO."
+>
+  {/* HERO */}
+  <section class="relative overflow-hidden">
+    <div class="paper-grain absolute inset-0 opacity-50 pointer-events-none"></div>
+    <div class="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 md:grid-cols-12 md:gap-12 md:px-8 md:py-24">
+      <div class="md:col-span-7">
+        <p class="font-mono text-xs uppercase tracking-[0.22em] text-muted-foreground">
+          Planes de suscripción
+        </p>
+        <h1 class="mt-3 font-display text-5xl leading-[0.95] tracking-tight md:text-7xl">
+          Únete al <span class="hand-underline">Club</span>.
+        </h1>
+        <p class="mt-6 max-w-xl text-muted-foreground md:text-lg">
+          Selecciona el plan de tu preferencia y forma parte de la comunidad
+          MURO. El plan se cobra en una sola exhibición y se renueva
+          automáticamente al expirar tu periodo. Puedes administrar tu
+          suscripción desde tu perfil en cualquier momento.
+        </p>
+        <div class="mt-8 flex flex-col gap-2 rounded-2xl border border-foreground/15 bg-card p-5 text-sm">
+          <div class="flex items-center gap-3">
+            <span class="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+              Mes en curso
+            </span>
+            <span class="h-px flex-1 bg-foreground/15"></span>
+            <span class="font-mono text-[10px] uppercase tracking-widest text-accent">
+              Envío 20 abril
+            </span>
+          </div>
+          <p class="font-display text-2xl">Robber Robber — Two Wheels Move The Soul</p>
+          <p class="text-muted-foreground">
+            Artista invitada · <span class="text-foreground">Chemtots</span>
+          </p>
+        </div>
+      </div>
+      <div class="relative md:col-span-5">
+        <img
+          src="/images/muro-logo.png"
+          alt=""
+          aria-hidden="true"
+          class="mx-auto h-auto w-full max-w-[420px] object-contain animate-wobble drop-shadow-[0_8px_30px_rgba(20,18,12,0.15)]"
+        />
+      </div>
+    </div>
+  </section>
+
+  {/* PLAN SELECTOR HEADER */}
+  <section class="border-y border-foreground/15 bg-foreground text-background">
+    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-5 md:px-8">
+      <p class="font-display text-base uppercase tracking-tight md:text-lg">
+        Selecciona el plan de tu preferencia
+      </p>
+      <div class="flex items-center gap-3">
+        <span class="font-mono text-xs uppercase tracking-wider text-background/60">
+          Región
+        </span>
+        <span class="rounded-full bg-accent px-3 py-1 font-mono text-[11px] uppercase tracking-widest text-accent-foreground">
+          México
+        </span>
+      </div>
+    </div>
+  </section>
+
+  {/* PLAN GRID */}
+  <section class="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-20">
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      {
+        plans.map((plan, i) => (
+          <article
+            class:list={[
+              "relative flex flex-col rounded-3xl border bg-card p-7 transition-transform hover:-translate-y-1",
+              plan.badge
+                ? "border-foreground bg-foreground text-background"
+                : "border-foreground/15",
+            ]}
+          >
+            {plan.badge && (
+              <span class="absolute -top-3 left-7 rounded-full bg-accent px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-accent-foreground">
+                {plan.badge}
+              </span>
+            )}
+            <div class="flex items-baseline gap-2">
+              <span
+                class:list={[
+                  "font-mono text-xs uppercase tracking-widest",
+                  plan.badge ? "text-background/60" : "text-muted-foreground",
+                ]}
+              >
+                Plan {String(i + 1).padStart(2, "0")}
+              </span>
+            </div>
+            <h2
+              class:list={[
+                "mt-1 font-display text-3xl leading-tight",
+                plan.badge ? "text-background" : "text-foreground",
+              ]}
+            >
+              {plan.name}
+            </h2>
+            <div class="mt-5 flex items-baseline gap-1.5">
+              <span class="font-display text-4xl">{fmt(plan.price)}</span>
+              <span
+                class:list={[
+                  "text-xs",
+                  plan.badge ? "text-background/60" : "text-muted-foreground",
+                ]}
+              >
+                {plan.cadence}
+              </span>
+            </div>
+            {plan.perMonth && (
+              <p
+                class:list={[
+                  "mt-1 font-mono text-xs",
+                  plan.badge ? "text-accent" : "text-accent",
+                ]}
+              >
+                ≈ {fmt(plan.perMonth)} /mes
+              </p>
+            )}
+
+            <ul
+              class:list={[
+                "mt-6 flex-1 space-y-3 text-sm",
+                plan.badge ? "text-background/85" : "text-foreground/80",
+              ]}
+            >
+              {plan.features.map((f) => (
+                <li class="flex items-start gap-2.5">
+                  <span
+                    class:list={[
+                      "mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full",
+                      plan.badge ? "bg-accent" : "bg-accent",
+                    ]}
+                  />
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+
+            <button
+              type="button"
+              class:list={[
+                "mt-7 inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-3 font-display text-sm uppercase tracking-wide transition-colors",
+                plan.badge
+                  ? "bg-accent text-accent-foreground hover:bg-accent/90"
+                  : "bg-foreground text-background hover:bg-foreground/90",
+              ]}
+            >
+              Seleccionar
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+            </button>
+          </article>
+        ))
+      }
+    </div>
+
+    {/* tiny FAQ */}
+    <div class="mt-16 grid gap-6 rounded-3xl border border-foreground/10 bg-card p-8 md:grid-cols-3 md:p-10">
+      {
+        [
+          { q: "¿Puedo cancelar?", a: "Sí, en cualquier momento desde tu perfil. Sin preguntas raras." },
+          { q: "¿Cuándo me llega?", a: "El envío del Disco del Mes sale alrededor del día 20 de cada mes." },
+          { q: "¿Y si vivo fuera de México?", a: "Hacemos envíos a EE.UU. y América Latina con costo adicional." },
+        ].map((item) => (
+          <div>
+            <h3 class="font-display text-lg">{item.q}</h3>
+            <p class="mt-2 text-sm text-muted-foreground">{item.a}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
