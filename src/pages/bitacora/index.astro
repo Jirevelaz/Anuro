@@ -8,10 +8,13 @@ const posts = await sanityClient.fetch(
   `*[_type == "post"] | order(publishedAt desc) {
     _id,
     title,
+    subtitle,
     "slug": slug.current,
     mainImage,
     publishedAt,
     isFeatured,
+    author,
+    estimatedReadingTime,
     category->{ _id, title },
     tags[]->{ _id, title },
     "excerpt": pt::text(body)
@@ -21,8 +24,8 @@ const posts = await sanityClient.fetch(
 // ── Hero: el post destacado más reciente ──
 const heroPost = posts.find((p: any) => p.isFeatured === true) || posts[0]
 
-// ── Grid: el resto de posts (sin el hero) ──
-const gridPosts = posts.filter((p: any) => p._id !== heroPost?._id)
+// ── Feed: el resto de posts (sin el hero) ──
+const feedPosts = posts.filter((p: any) => p._id !== heroPost?._id)
 
 // ── Categorías únicas para los filtros ──
 const allCategories = [
@@ -38,12 +41,12 @@ function formatDate(dateStr: string) {
   if (!dateStr) return ""
   return new Date(dateStr).toLocaleDateString("es-MX", {
     day: "numeric",
-    month: "short",
+    month: "long",
     year: "numeric",
   })
 }
 
-function truncate(text: string, max = 160) {
+function truncate(text: string, max = 200) {
   if (!text) return ""
   return text.length > max ? text.slice(0, max).trimEnd() + "…" : text
 }
@@ -51,105 +54,137 @@ function truncate(text: string, max = 160) {
 
 <BaseLayout
   title="Bitácora · ANURO"
-  description="Notas, ensayos y curaduría desde el club de vinilos ANURO."
+  description="Ensayos, reseñas y curaduría musical desde el sello discográfico ANURO."
 >
-  <!-- HERO EDITORIAL -->
+  <!-- HEADER EDITORIAL -->
   <section class="relative border-b border-foreground/10">
     <div class="paper-grain absolute inset-0 opacity-50 pointer-events-none"></div>
-    <div class="relative mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24">
-      <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-        <div class="max-w-2xl">
-          <p class="font-mono text-xs uppercase tracking-[0.25em] text-primary">
-            Bitácora
-          </p>
-          <h1 class="mt-4 font-display text-5xl leading-[0.95] tracking-tight md:text-7xl lg:text-8xl">
-            Notas desde<br />
-            <span class="text-primary">el club</span>.
-          </h1>
-        </div>
-        <p class="max-w-sm text-muted-foreground md:text-right md:text-lg">
-          Curaduría, ensayos, entrevistas, y todo lo que pasa entre bambalinas
-          cuando armamos un Disco del Mes.
-        </p>
-      </div>
+    <div class="relative mx-auto max-w-3xl px-4 py-16 text-center md:py-24">
+      <p class="font-mono text-xs uppercase tracking-[0.25em] text-primary">
+        La Bitácora
+      </p>
+      <h1 class="mt-5 font-display text-5xl leading-[0.95] tracking-tight md:text-7xl">
+        Curaduría &<br />Cultura Musical
+      </h1>
+      <p class="mx-auto mt-6 max-w-lg text-muted-foreground md:text-lg">
+        Ensayos, reseñas, entrevistas y selecciones curadas desde ANURO.
+        Historias que suenan tan bien como los discos que vendemos.
+      </p>
+
+      <!-- Newsletter CTA -->
+      <form class="mx-auto mt-8 flex max-w-md overflow-hidden rounded-full border border-foreground/15 bg-card">
+        <input
+          type="email"
+          required
+          placeholder="tu@correo.com"
+          class="flex-1 bg-transparent px-5 py-3.5 text-sm outline-none placeholder:text-muted-foreground"
+        />
+        <button
+          type="submit"
+          class="shrink-0 bg-foreground px-6 font-display text-sm uppercase tracking-wide text-background transition-colors hover:bg-foreground/90"
+        >
+          Suscribirse
+        </button>
+      </form>
+      <p class="mt-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/60">
+        Sin spam · Cancelar cuando quieras
+      </p>
     </div>
   </section>
 
-  <!-- FEATURED POST (HERO POST) -->
+  <!-- FEATURED POST -->
   {heroPost && (
-    <section class="mx-auto max-w-7xl px-4 py-12 md:px-8 md:py-16">
+    <section class="mx-auto max-w-5xl px-4 py-12 md:px-8 md:py-16">
       <a
         href={`/bitacora/${heroPost.slug}`}
-        class="group relative grid gap-0 overflow-hidden rounded-2xl border border-foreground/10 bg-card md:grid-cols-2"
+        class="group block"
       >
         <!-- Image -->
-        <div class="relative aspect-[4/3] overflow-hidden md:aspect-auto md:min-h-[480px]">
-          {heroPost.mainImage ? (
+        {heroPost.mainImage && (
+          <div class="relative aspect-[16/9] overflow-hidden rounded-2xl">
             <img
-              src={urlFor(heroPost.mainImage).width(960).height(720).format("webp").url()}
+              src={urlFor(heroPost.mainImage).width(1200).height(675).format("webp").url()}
               alt={heroPost.title}
-              class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
               loading="eager"
-              width="960"
-              height="720"
+              width="1200"
+              height="675"
             />
-          ) : (
-            <div class="flex h-full w-full items-center justify-center bg-muted">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="text-muted-foreground/40">
-                <rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
-                <circle cx="9" cy="9" r="2"></circle>
-                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
-              </svg>
-            </div>
-          )}
-          <div class="absolute inset-0 bg-gradient-to-t from-foreground/20 to-transparent md:bg-gradient-to-r md:from-transparent md:to-foreground/10"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-foreground/30 via-transparent to-transparent"></div>
 
-          <!-- Badge -->
-          <span class="absolute left-4 top-4 rounded-full bg-accent px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-accent-foreground">
-            Destacado
-          </span>
-        </div>
+            <!-- Badge -->
+            <span class="absolute left-4 top-4 rounded-full bg-accent px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-accent-foreground">
+              Destacado
+            </span>
+          </div>
+        )}
 
         <!-- Content -->
-        <div class="flex flex-col justify-center gap-6 p-8 md:p-12 lg:p-16">
-          <div class="flex flex-wrap items-center gap-3 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+        <div class="mt-6 max-w-3xl">
+          <div class="flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
             {heroPost.category?.title && (
               <>
-                <span>{heroPost.category.title}</span>
+                <span class="text-primary">{heroPost.category.title}</span>
                 <span class="h-1 w-1 rounded-full bg-foreground/30"></span>
               </>
             )}
             {heroPost.publishedAt && (
               <time datetime={heroPost.publishedAt}>{formatDate(heroPost.publishedAt)}</time>
             )}
+            {heroPost.estimatedReadingTime && (
+              <>
+                <span class="h-1 w-1 rounded-full bg-foreground/30"></span>
+                <span>{heroPost.estimatedReadingTime} min de lectura</span>
+              </>
+            )}
           </div>
 
-          <h2 class="font-display text-3xl leading-tight tracking-tight md:text-4xl lg:text-5xl">
+          <h2 class="mt-3 font-display text-3xl leading-tight tracking-tight transition-colors group-hover:text-primary md:text-4xl lg:text-5xl">
             {heroPost.title}
           </h2>
 
-          {heroPost.excerpt && (
-            <p class="text-muted-foreground leading-relaxed md:text-lg">
-              {truncate(heroPost.excerpt, 220)}
+          {heroPost.subtitle && (
+            <p class="mt-3 text-lg text-muted-foreground">
+              {heroPost.subtitle}
             </p>
           )}
 
-          <span class="inline-flex w-fit items-center gap-3 rounded-full border border-foreground/20 px-5 py-2.5 font-mono text-xs uppercase tracking-wider transition-colors group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
-            Leer artículo
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-1">
-              <path d="M5 12h14"></path>
-              <path d="m12 5 7 7-7 7"></path>
-            </svg>
-          </span>
+          {heroPost.excerpt && !heroPost.subtitle && (
+            <p class="mt-3 text-muted-foreground md:text-lg">
+              {truncate(heroPost.excerpt, 260)}
+            </p>
+          )}
+
+          <!-- Author -->
+          {heroPost.author?.name && (
+            <div class="mt-5 flex items-center gap-3">
+              {heroPost.author.image ? (
+                <img
+                  src={urlFor(heroPost.author.image).width(80).height(80).format("webp").url()}
+                  alt={heroPost.author.name}
+                  class="h-8 w-8 rounded-full object-cover"
+                  width="40"
+                  height="40"
+                />
+              ) : (
+                <div class="grid h-8 w-8 place-items-center rounded-full bg-primary/10 text-primary">
+                  <span class="font-display text-sm">{heroPost.author.name[0]}</span>
+                </div>
+              )}
+              <span class="text-sm text-muted-foreground">
+                Por <span class="font-medium text-foreground">{heroPost.author.name}</span>
+              </span>
+            </div>
+          )}
         </div>
       </a>
     </section>
   )}
 
-  <!-- CATEGORY FILTER CHIPS -->
+  <!-- CATEGORY FILTER PILLS -->
   {allCategories.length > 0 && (
-    <section class="sticky top-[57px] z-30 border-b border-foreground/10 bg-background/95 backdrop-blur-sm">
-      <div class="mx-auto max-w-7xl px-4 md:px-8">
+    <section class="sticky top-[57px] z-30 border-y border-foreground/10 bg-background/95 backdrop-blur-sm">
+      <div class="mx-auto max-w-5xl px-4 md:px-8">
         <nav id="category-filters" class="flex items-center gap-2 overflow-x-auto py-4 scrollbar-hide" aria-label="Filtrar por categoría">
           <button
             type="button"
@@ -172,68 +207,41 @@ function truncate(text: string, max = 160) {
     </section>
   )}
 
-  <!-- ARTICLES GRID -->
-  <section class="mx-auto max-w-7xl px-4 py-12 pb-20 md:px-8 md:py-16 md:pb-24">
-    {gridPosts.length > 0 && (
+  <!-- EDITORIAL FEED -->
+  <section class="mx-auto max-w-5xl px-4 py-12 pb-20 md:px-8 md:py-16 md:pb-24">
+    {feedPosts.length > 0 && (
       <div class="mb-8 flex items-center justify-between border-b border-foreground/10 pb-4">
-        <h3 class="font-display text-2xl">Últimos artículos</h3>
+        <h3 class="font-display text-2xl">Artículos</h3>
         <span id="post-count" class="font-mono text-xs uppercase tracking-wider text-muted-foreground">
-          {gridPosts.length} artículo{gridPosts.length !== 1 ? "s" : ""}
+          {feedPosts.length} artículo{feedPosts.length !== 1 ? "s" : ""}
         </span>
       </div>
     )}
 
-    <div id="posts-grid" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-      {gridPosts.map((post: any) => (
+    <div id="posts-feed" class="flex flex-col divide-y divide-foreground/8">
+      {feedPosts.map((post: any) => (
         <a
           href={`/bitacora/${post.slug}`}
-          class="post-card group flex flex-col"
+          class="post-card group flex gap-6 py-8 first:pt-0 md:gap-10"
           data-category={post.category?.title || ""}
         >
-          <!-- Image Container -->
-          <div class="relative aspect-[4/3] overflow-hidden rounded-xl bg-muted">
-            {post.mainImage ? (
-              <img
-                src={urlFor(post.mainImage).width(640).height(480).format("webp").url()}
-                alt={post.title}
-                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                loading="lazy"
-                width="640"
-                height="480"
-              />
-            ) : (
-              <div class="flex h-full w-full items-center justify-center bg-muted">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="text-muted-foreground/40">
-                  <rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
-                  <circle cx="9" cy="9" r="2"></circle>
-                  <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
-                </svg>
-              </div>
-            )}
-            <!-- Category Pill -->
-            {post.category?.title && (
-              <span class="absolute left-3 top-3 rounded-full bg-background/90 px-2.5 py-1 font-mono text-[9px] uppercase tracking-widest backdrop-blur-sm">
-                {post.category.title}
-              </span>
-            )}
-          </div>
-
-          <!-- Content -->
-          <div class="flex flex-1 flex-col gap-3 pt-5">
+          <!-- Text content -->
+          <div class="flex flex-1 flex-col justify-center gap-3">
             <!-- Meta -->
             <div class="flex flex-wrap items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+              {post.category?.title && (
+                <>
+                  <span class="text-primary">{post.category.title}</span>
+                  <span class="h-0.5 w-0.5 rounded-full bg-foreground/30"></span>
+                </>
+              )}
               {post.publishedAt && (
                 <time datetime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
               )}
-              {post.tags && post.tags.length > 0 && (
+              {post.estimatedReadingTime && (
                 <>
                   <span class="h-0.5 w-0.5 rounded-full bg-foreground/30"></span>
-                  {post.tags.slice(0, 2).map((tag: any, i: number) => (
-                    <>
-                      {i > 0 && <span class="text-foreground/20">·</span>}
-                      <span class="text-primary/80">{tag.title}</span>
-                    </>
-                  ))}
+                  <span>{post.estimatedReadingTime} min</span>
                 </>
               )}
             </div>
@@ -243,11 +251,59 @@ function truncate(text: string, max = 160) {
               {post.title}
             </h4>
 
-            <!-- Excerpt -->
-            {post.excerpt && (
-              <p class="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
-                {truncate(post.excerpt)}
+            <!-- Subtitle or excerpt -->
+            {post.subtitle ? (
+              <p class="text-sm leading-relaxed text-muted-foreground md:text-base">
+                {post.subtitle}
               </p>
+            ) : post.excerpt ? (
+              <p class="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+                {truncate(post.excerpt, 180)}
+              </p>
+            ) : null}
+
+            <!-- Author -->
+            {post.author?.name && (
+              <div class="mt-1 flex items-center gap-2">
+                {post.author.image ? (
+                  <img
+                    src={urlFor(post.author.image).width(48).height(48).format("webp").url()}
+                    alt={post.author.name}
+                    class="h-5 w-5 rounded-full object-cover"
+                    width="24"
+                    height="24"
+                  />
+                ) : (
+                  <div class="grid h-5 w-5 place-items-center rounded-full bg-primary/10 text-primary">
+                    <span class="font-display text-[9px]">{post.author.name[0]}</span>
+                  </div>
+                )}
+                <span class="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                  {post.author.name}
+                </span>
+              </div>
+            )}
+          </div>
+
+          <!-- Thumbnail -->
+          <div class="relative aspect-square w-28 shrink-0 overflow-hidden rounded-xl bg-muted md:w-44 md:aspect-[4/3]">
+            {post.mainImage ? (
+              <img
+                src={urlFor(post.mainImage).width(352).height(264).format("webp").url()}
+                alt={post.title}
+                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
+                width="352"
+                height="264"
+              />
+            ) : (
+              <div class="flex h-full w-full items-center justify-center bg-muted">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="text-muted-foreground/40">
+                  <rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
+                  <circle cx="9" cy="9" r="2"></circle>
+                  <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
+                </svg>
+              </div>
             )}
           </div>
         </a>
@@ -296,7 +352,6 @@ function truncate(text: string, max = 160) {
     if (!filterButtons.length || !cards.length) return
 
     function setActiveFilter(selectedCategory: string) {
-      // Actualizar estado visual de las píldoras
       filterButtons.forEach((btn) => {
         const isActive =
           btn.dataset.filter === selectedCategory ||
@@ -320,7 +375,6 @@ function truncate(text: string, max = 160) {
         }
       })
 
-      // Filtrar tarjetas
       let visibleCount = 0
       cards.forEach((card) => {
         const cardCategory = card.dataset.category || ""
@@ -335,18 +389,15 @@ function truncate(text: string, max = 160) {
         }
       })
 
-      // Actualizar contador
       if (postCount) {
         postCount.textContent = `${visibleCount} artículo${visibleCount !== 1 ? "s" : ""}`
       }
 
-      // Mostrar/ocultar estado vacío
       if (emptyState) {
         emptyState.classList.toggle("hidden", visibleCount > 0)
       }
     }
 
-    // Event listeners para los botones de filtro
     filterButtons.forEach((btn) => {
       btn.addEventListener("click", () => {
         const filter = btn.dataset.filter || "all"
@@ -354,7 +405,6 @@ function truncate(text: string, max = 160) {
       })
     })
 
-    // Botón de reset en el estado vacío
     if (resetButton) {
       resetButton.addEventListener("click", () => {
         setActiveFilter("all")
