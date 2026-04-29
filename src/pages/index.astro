@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets"
 import BaseLayout from "../layouts/BaseLayout.astro"
 import ProductCard from "../components/ProductCard.astro"
 import CollectionNav from "../components/CollectionNav.astro"
@@ -95,11 +96,11 @@ const editions = edicionesEspeciales.slice(0, 8)
           </svg>
 
           {/* Logo */}
-          <img
+          <Image
             src="/images/muro-logo.png"
             alt="Logo de ANURO"
-            width="540"
-            height="540"
+            width={540}
+            height={540}
             class="absolute inset-[10%] h-[80%] w-[80%] object-contain animate-wobble drop-shadow-[0_8px_30px_rgba(20,18,12,0.18)]"
           />
 
@@ -203,11 +204,13 @@ const editions = edicionesEspeciales.slice(0, 8)
       </div>
       <div class="md:col-span-7">
         <div class="relative aspect-[4/3] overflow-hidden rounded-3xl border border-background/10">
-          <img
+          <Image
             src="/images/club-hero.jpg"
             alt="Ilustración del Disco del Mes — Two Wheels Move The Soul"
             class="h-full w-full object-cover"
             loading="lazy"
+            width={800}
+            height={600}
           />
           <div class="absolute left-4 top-4 rounded-full bg-accent px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-accent-foreground">
             #84 · 2026
@@ -282,11 +285,13 @@ const editions = edicionesEspeciales.slice(0, 8)
       class="group relative grid overflow-hidden rounded-3xl border border-foreground/10 bg-card md:grid-cols-2"
     >
       <div class="relative aspect-[4/3] md:aspect-auto">
-        <img
+        <Image
           src="/images/listening-bar.jpg"
           alt="Listening bar"
           class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           loading="lazy"
+          width={800}
+          height={600}
         />
       </div>
       <div class="flex flex-col justify-center gap-5 p-8 md:p-14">

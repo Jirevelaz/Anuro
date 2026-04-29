@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets"
 const year = new Date().getFullYear()
 ---
 
@@ -8,11 +9,11 @@ const year = new Date().getFullYear()
   <div class="relative mx-auto grid max-w-7xl gap-12 px-4 py-16 md:grid-cols-3 md:px-8">
     <div class="space-y-5">
       <div class="flex items-center gap-3">
-        <img
+        <Image
           src="/images/muro-logo.png"
           alt=""
-          width="56"
-          height="56"
+          width={56}
+          height={56}
           class="h-14 w-14 object-contain invert-0"
         />
         <div class="flex flex-col leading-none">
@@ -34,7 +35,7 @@ const year = new Date().getFullYear()
             { label: "Spotify", icon: "spotify" },
           ].map((s) => (
             <a
-              href="#"
+              href="/"
               aria-label={s.label}
               class="grid h-10 w-10 place-items-center rounded-full border border-background/20 text-background/80 transition-colors hover:border-primary hover:text-primary"
             >
@@ -70,10 +71,10 @@ const year = new Date().getFullYear()
       <div>
         <h3 class="mb-4 font-display text-lg uppercase tracking-tight">Información</h3>
         <ul class="space-y-2.5 text-background/70">
-          <li><a href="#" class="transition-colors hover:text-background">Políticas de Venta</a></li>
-          <li><a href="#" class="transition-colors hover:text-background">Preguntas Frecuentes</a></li>
-          <li><a href="#" class="transition-colors hover:text-background">Aviso de Privacidad</a></li>
-          <li><a href="#" class="transition-colors hover:text-background">Términos y Condiciones</a></li>
+          <li><a href="/" class="transition-colors hover:text-background">Políticas de Venta</a></li>
+          <li><a href="/" class="transition-colors hover:text-background">Preguntas Frecuentes</a></li>
+          <li><a href="/" class="transition-colors hover:text-background">Aviso de Privacidad</a></li>
+          <li><a href="/" class="transition-colors hover:text-background">Términos y Condiciones</a></li>
         </ul>
       </div>
       <div>

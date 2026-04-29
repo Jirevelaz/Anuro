@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets"
 ---
 
 <!-- Floating CTA Button (appears on scroll) -->
@@ -38,7 +39,7 @@
     
     <div class="text-center">
       <div class="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
-        <img src="/images/muro-logo.png" alt="" class="h-10 w-10 object-contain" />
+        <Image src="/images/muro-logo.png" alt="" width={40} height={40} class="h-10 w-10 object-contain" />
       </div>
       
       <h2 class="font-display text-3xl tracking-tight">Únete al Club</h2>
