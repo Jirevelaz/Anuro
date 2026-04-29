@@ -13,31 +13,34 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
 
-  --font-display: "Caprasimo", "Georgia", serif;
+  --font-display: "Fraunces", "Georgia", serif;
   --font-sans: "DM Sans", system-ui, -apple-system, sans-serif;
   --font-mono: "DM Mono", ui-monospace, monospace;
 }
 
 :root {
-  /* warm hand-painted paper cream */
-  --background: oklch(0.945 0.035 85);
-  --foreground: oklch(0.18 0.015 60);
+  /* warm hand-painted paper cream from logo background */
+  --background: #f5ead4;
+  --foreground: #1a1814;
 
-  --card: oklch(0.97 0.025 85);
-  --card-foreground: oklch(0.18 0.015 60);
+  --card: #faf6ed;
+  --card-foreground: #1a1814;
 
-  --muted: oklch(0.88 0.025 80);
-  --muted-foreground: oklch(0.42 0.018 65);
+  --muted: #e8dcc6;
+  --muted-foreground: #6b6358;
 
-  --border: oklch(0.78 0.025 70);
+  --border: #d4c9b5;
 
-  /* deep cobalt blue from the logo's star */
-  --primary: oklch(0.42 0.16 255);
-  --primary-foreground: oklch(0.97 0.025 85);
+  /* forest green from the frog */
+  --primary: #3d6b4f;
+  --primary-foreground: #f5ead4;
 
-  /* warm rust red from the frog's toes */
-  --accent: oklch(0.55 0.18 30);
-  --accent-foreground: oklch(0.97 0.025 85);
+  /* warm rust red from frog's toes/eyes */
+  --accent: #b94a3d;
+  --accent-foreground: #faf6ed;
+  
+  /* cobalt blue from vinyl star */
+  --highlight: #6b8ba4;
 }
 
 @layer base {
