@@ -3,6 +3,7 @@ import "../styles/global.css"
 import Header from "../components/Header.astro"
 import Footer from "../components/Footer.astro"
 import MarqueeBar from "../components/MarqueeBar.astro"
+import JoinClubModal from "../components/JoinClubModal.astro"
 
 interface Props {
   title?: string
@@ -10,8 +11,8 @@ interface Props {
   hideTopMarquee?: boolean
 }
 const {
-  title = "MURO — Club de Vinilos",
-  description = "Cada mes una rana nueva en tu tornamesa. MURO es un club de vinilos hecho con paciencia, criterio y mucha música.",
+  title = "ANURO — Club de Vinilos",
+  description = "Cada mes una rana nueva en tu tornamesa. ANURO es un club de vinilos hecho con paciencia, criterio y mucha música.",
   hideTopMarquee = false,
 } = Astro.props
 ---
@@ -42,5 +43,6 @@ const {
       <slot />
     </main>
     <Footer />
+    <JoinClubModal />
   </body>
 </html>

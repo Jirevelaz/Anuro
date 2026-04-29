@@ -1,0 +1,150 @@
+---
+---
+
+<!-- Floating CTA Button (appears on scroll) -->
+<div 
+  id="floating-cta" 
+  class="fixed bottom-6 right-6 z-50 translate-y-20 opacity-0 transition-all duration-300"
+  data-floating-cta
+>
+  <button
+    type="button"
+    data-open-modal
+    class="group flex items-center gap-2 rounded-full bg-accent px-5 py-3 font-display text-sm uppercase tracking-wide text-accent-foreground shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl"
+  >
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:rotate-12"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg>
+    <span class="hidden sm:inline">Únete al Club</span>
+  </button>
+</div>
+
+<!-- Modal Overlay -->
+<div 
+  id="join-modal" 
+  class="fixed inset-0 z-[100] flex items-center justify-center bg-foreground/60 p-4 opacity-0 backdrop-blur-sm transition-opacity duration-300 pointer-events-none"
+  data-modal
+>
+  <div 
+    class="relative w-full max-w-lg scale-95 transform overflow-hidden rounded-3xl bg-background p-8 shadow-2xl transition-transform duration-300"
+    data-modal-content
+  >
+    <button
+      type="button"
+      data-close-modal
+      class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-foreground/5 hover:text-foreground"
+      aria-label="Cerrar"
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+    
+    <div class="text-center">
+      <div class="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
+        <img src="/images/muro-logo.png" alt="" class="h-10 w-10 object-contain" />
+      </div>
+      
+      <h2 class="font-display text-3xl tracking-tight">Únete al Club</h2>
+      <p class="mx-auto mt-3 max-w-sm text-muted-foreground">
+        Cada mes recibes un vinilo curado, con ilustración exclusiva y prensaje de color. Sin sorpresas, puro buen gusto.
+      </p>
+    </div>
+    
+    <div class="mt-8 space-y-4">
+      <div class="rounded-2xl border border-foreground/10 p-5 transition-colors hover:border-accent">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <span class="rounded-full bg-accent/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-accent">
+              Más popular
+            </span>
+            <h3 class="mt-2 font-display text-xl">Membresía Mensual</h3>
+            <p class="mt-1 text-sm text-muted-foreground">
+              1 disco curado cada mes + acceso a preventas exclusivas
+            </p>
+          </div>
+          <div class="text-right">
+            <span class="font-display text-2xl">$890</span>
+            <span class="text-sm text-muted-foreground">/mes</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="rounded-2xl border border-foreground/10 p-5 transition-colors hover:border-accent">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <span class="rounded-full bg-foreground/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+              Mejor valor
+            </span>
+            <h3 class="mt-2 font-display text-xl">Membresía Anual</h3>
+            <p class="mt-1 text-sm text-muted-foreground">
+              12 discos + 2 ediciones especiales gratis
+            </p>
+          </div>
+          <div class="text-right">
+            <span class="font-display text-2xl">$9,500</span>
+            <span class="text-sm text-muted-foreground">/año</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mt-6">
+      <a
+        href="/pages/planes"
+        class="flex w-full items-center justify-center gap-2 rounded-full bg-foreground px-6 py-4 font-display text-sm uppercase tracking-wide text-background transition-transform hover:-translate-y-0.5"
+      >
+        Ver todos los planes
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+      </a>
+    </div>
+    
+    <p class="mt-4 text-center text-xs text-muted-foreground">
+      Envío gratis en CDMX · Cancela cuando quieras
+    </p>
+  </div>
+</div>
+
+<script>
+  const floatingCta = document.querySelector('[data-floating-cta]') as HTMLElement
+  const modal = document.querySelector('[data-modal]') as HTMLElement
+  const modalContent = modal?.querySelector('[data-modal-content]') as HTMLElement
+  const openBtns = document.querySelectorAll('[data-open-modal]')
+  const closeBtns = document.querySelectorAll('[data-close-modal]')
+  
+  // Show floating CTA on scroll
+  let lastScroll = 0
+  window.addEventListener('scroll', () => {
+    const currentScroll = window.scrollY
+    
+    if (currentScroll > 400) {
+      floatingCta.classList.remove('translate-y-20', 'opacity-0')
+    } else {
+      floatingCta.classList.add('translate-y-20', 'opacity-0')
+    }
+    
+    lastScroll = currentScroll
+  })
+  
+  // Modal open/close
+  const openModal = () => {
+    modal.classList.remove('opacity-0', 'pointer-events-none')
+    modalContent.classList.remove('scale-95')
+    modalContent.classList.add('scale-100')
+    document.body.style.overflow = 'hidden'
+  }
+  
+  const closeModal = () => {
+    modal.classList.add('opacity-0', 'pointer-events-none')
+    modalContent.classList.add('scale-95')
+    modalContent.classList.remove('scale-100')
+    document.body.style.overflow = ''
+  }
+  
+  openBtns.forEach(btn => btn.addEventListener('click', openModal))
+  closeBtns.forEach(btn => btn.addEventListener('click', closeModal))
+  
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal()
+  })
+  
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal()
+  })
+</script>

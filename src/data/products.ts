@@ -300,7 +300,7 @@ export const accesorios: Product[] = [
   },
   {
     slug: "gift-card-muro",
-    title: "Gift Card MURO",
+    title: "Gift Card ANURO",
     price: 500,
     image: "/images/accessory-giftcard.jpg",
     collection: "accesorios",
