@@ -38,6 +38,13 @@ export const release = defineType({
       },
     }),
     defineField({
+      name: 'description',
+      title: 'Description',
+      type: 'array',
+      of: [{type: 'block'}],
+      description: 'Describe el disco: historia, edición, detalles del prensaje, etc.',
+    }),
+    defineField({
       name: 'format',
       title: 'Format',
       type: 'string',

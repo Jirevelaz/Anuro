@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro"
+import { PortableText } from "astro-portabletext"
 import { sanityClient } from "sanity:client"
 import { urlFor } from "../../lib/sanity"
 
@@ -28,7 +29,8 @@ const release = await sanityClient.fetch(
     coverImage,
     format,
     buyUrl,
-    stockCount
+    stockCount,
+    description
   }`,
   { slug }
 )
@@ -119,6 +121,13 @@ const SANITY_DATASET = "production"
             {release.format}
           </span>
         </div>
+
+        {/* Description */}
+        {release.description && release.description.length > 0 && (
+          <div class="mt-8 release-description">
+            <PortableText value={release.description} />
+          </div>
+        )}
 
         {/* Divider */}
         <div class="my-8 border-t border-foreground/10"></div>
@@ -236,6 +245,37 @@ const SANITY_DATASET = "production"
   .buy-button.is-available:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Release description (Portable Text) */
+  .release-description {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: var(--muted-foreground);
+  }
+
+  .release-description :global(p) {
+    margin-bottom: 1rem;
+  }
+
+  .release-description :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .release-description :global(strong) {
+    font-weight: 600;
+    color: var(--foreground);
+  }
+
+  .release-description :global(em) {
+    font-style: italic;
+  }
+
+  .release-description :global(a) {
+    color: var(--primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 </style>
 
