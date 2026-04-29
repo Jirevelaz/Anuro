@@ -75,7 +75,7 @@ const isSoldOut = product.badges?.includes("AGOTADO")
       )
     }
     <h3 class="font-display text-lg leading-snug text-balance">
-      <a href={`/productos/${product.slug}`} class="transition-colors hover:text-accent">{product.title}</a>
+      <a href={`/productos/${product.slug}`} class="transition-colors hover:text-primary">{product.title}</a>
     </h3>
     <div class="flex flex-wrap items-baseline gap-x-2 pt-1">
       <span class="font-display text-base">{formatPrice(product.price)}</span>
@@ -89,15 +89,15 @@ const isSoldOut = product.badges?.includes("AGOTADO")
     </div>
     {
       product.subscriberPrice && (
-        <p class="text-xs text-muted-foreground">
-          Precio suscriptor:{" "}
-          {product.originalPrice && (
-            <span class="line-through">{formatPrice(product.originalPrice)}</span>
-          )}{" "}
-          <span class="font-semibold text-accent">
-            {formatPrice(product.subscriberPrice)}
+        <div class="mt-2 flex items-center gap-2 rounded-lg bg-primary/10 px-3 py-1.5">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-primary"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg>
+          <span class="text-xs text-muted-foreground">
+            Suscriptor:{" "}
+            <span class="font-semibold text-primary">
+              {formatPrice(product.subscriberPrice)}
+            </span>
           </span>
-        </p>
+        </div>
       )
     }
   </div>
