@@ -1,0 +1,281 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro"
+import { sanityClient } from "sanity:client"
+
+// ── GROQ: traer todos los servicios ordenados por precio ascendente ──
+const services = await sanityClient.fetch(
+  `*[_type == "service"] | order(price asc) {
+    _id,
+    title,
+    price,
+    description,
+    features
+  }`
+)
+
+// ── Helpers ──
+function formatPrice(price: number) {
+  return new Intl.NumberFormat("es-MX", {
+    style: "currency",
+    currency: "MXN",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(price)
+}
+---
+
+<BaseLayout
+  title="Estudio · ANURO"
+  description="Servicios de producción, mezcla y mastering a tarifa plana. Sin sorpresas, sin suscripciones."
+>
+  <!-- HERO -->
+  <section class="relative border-b border-foreground/10">
+    <div class="paper-grain absolute inset-0 opacity-50 pointer-events-none"></div>
+    <div class="relative mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24">
+      <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div class="max-w-2xl">
+          <p class="font-mono text-xs uppercase tracking-[0.25em] text-primary">
+            Estudio de Producción
+          </p>
+          <h1 class="mt-4 font-display text-5xl leading-[0.95] tracking-tight md:text-7xl lg:text-8xl">
+            Tu disco,<br />
+            <span class="text-primary">tarifa plana</span>.
+          </h1>
+        </div>
+        <p class="max-w-sm text-muted-foreground md:text-right md:text-lg">
+          Sin costos ocultos, sin suscripciones. Cada servicio tiene un precio fijo
+          para que te concentres en lo que importa: la música.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING GRID -->
+  <section class="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24">
+    {services.length > 0 ? (
+      <div class={`grid gap-8 ${services.length === 1 ? 'max-w-md mx-auto' : services.length === 2 ? 'md:grid-cols-2 max-w-4xl mx-auto' : 'md:grid-cols-2 lg:grid-cols-3'}`}>
+        {services.map((service: any, i: number) => {
+          const isHighlighted = i === Math.floor(services.length / 2) && services.length >= 3
+          return (
+            <div
+              class:list={[
+                "group relative flex flex-col overflow-hidden rounded-2xl border transition-all duration-300",
+                isHighlighted
+                  ? "border-primary bg-foreground text-background shadow-2xl shadow-foreground/10 md:scale-105 md:-my-4"
+                  : "border-foreground/10 bg-card hover:border-primary/30",
+              ]}
+            >
+              {/* Badge para el plan destacado */}
+              {isHighlighted && (
+                <div class="bg-primary px-4 py-2 text-center font-mono text-[10px] uppercase tracking-widest text-primary-foreground">
+                  Más popular
+                </div>
+              )}
+
+              <div class="flex flex-1 flex-col p-8 md:p-10">
+                {/* Título del servicio */}
+                <h3
+                  class:list={[
+                    "font-display text-2xl tracking-tight",
+                    isHighlighted ? "text-background" : "text-foreground",
+                  ]}
+                >
+                  {service.title}
+                </h3>
+
+                {/* Descripción */}
+                {service.description && (
+                  <p
+                    class:list={[
+                      "mt-3 text-sm leading-relaxed",
+                      isHighlighted ? "text-background/70" : "text-muted-foreground",
+                    ]}
+                  >
+                    {service.description}
+                  </p>
+                )}
+
+                {/* Precio */}
+                <div class="mt-6 mb-8">
+                  <div class="flex items-baseline gap-1">
+                    <span
+                      class:list={[
+                        "font-display text-5xl tracking-tight",
+                        isHighlighted ? "text-background" : "text-foreground",
+                      ]}
+                    >
+                      {formatPrice(service.price)}
+                    </span>
+                    <span
+                      class:list={[
+                        "font-mono text-xs uppercase tracking-wider",
+                        isHighlighted ? "text-background/50" : "text-muted-foreground",
+                      ]}
+                    >
+                      MXN
+                    </span>
+                  </div>
+                  <p
+                    class:list={[
+                      "mt-1 font-mono text-[10px] uppercase tracking-widest",
+                      isHighlighted ? "text-background/40" : "text-muted-foreground/60",
+                    ]}
+                  >
+                    Tarifa plana · Sin cargos extra
+                  </p>
+                </div>
+
+                {/* Separador */}
+                <div
+                  class:list={[
+                    "border-t mb-8",
+                    isHighlighted ? "border-background/15" : "border-foreground/10",
+                  ]}
+                />
+
+                {/* Features */}
+                {service.features && service.features.length > 0 && (
+                  <ul class="flex-1 space-y-3">
+                    {service.features.map((feature: string) => (
+                      <li class="flex items-start gap-3">
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class:list={[
+                            "mt-0.5 shrink-0",
+                            isHighlighted ? "text-primary" : "text-primary",
+                          ]}
+                        >
+                          <path d="M20 6 9 17l-5-5" />
+                        </svg>
+                        <span
+                          class:list={[
+                            "text-sm leading-relaxed",
+                            isHighlighted ? "text-background/80" : "text-muted-foreground",
+                          ]}
+                        >
+                          {feature}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {/* CTA Button */}
+                <a
+                  href="mailto:estudio@anuro.club?subject=Consulta sobre servicio: {service.title}"
+                  class:list={[
+                    "mt-10 inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 font-mono text-xs uppercase tracking-wider transition-all duration-300",
+                    isHighlighted
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90 hover:-translate-y-0.5"
+                      : "border border-foreground/20 hover:border-primary hover:bg-primary hover:text-primary-foreground hover:-translate-y-0.5",
+                  ]}
+                >
+                  Solicitar cotización
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14"></path>
+                    <path d="m12 5 7 7-7 7"></path>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    ) : (
+      <div class="py-20 text-center">
+        <p class="font-display text-2xl text-muted-foreground">
+          Próximamente disponibles.
+        </p>
+        <p class="mt-2 text-sm text-muted-foreground/60">
+          Estamos preparando nuestros servicios. Vuelve pronto.
+        </p>
+      </div>
+    )}
+  </section>
+
+  <!-- PROCESS SECTION -->
+  <section class="border-t border-foreground/10">
+    <div class="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24">
+      <div class="text-center">
+        <p class="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
+          Así trabajamos
+        </p>
+        <h2 class="mx-auto mt-2 max-w-2xl font-display text-3xl leading-tight tracking-tight md:text-4xl lg:text-5xl">
+          Proceso <span class="hand-underline">simple</span>, resultado profesional
+        </h2>
+      </div>
+
+      <div class="mt-14 grid gap-8 md:grid-cols-3">
+        {[
+          {
+            step: "01",
+            title: "Escríbenos",
+            desc: "Cuéntanos tu proyecto, estilo y referencias. Nos ponemos de acuerdo en objetivos y tiempos.",
+            icon: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z",
+          },
+          {
+            step: "02",
+            title: "Producimos",
+            desc: "Trabajamos en tu proyecto con comunicación constante. Rondas de revisión incluidas en la tarifa.",
+            icon: "M9 18V5l12-2v13 M9 9l12-2",
+          },
+          {
+            step: "03",
+            title: "Entregamos",
+            desc: "Recibes los archivos finales en alta resolución, listos para distribución y plataformas.",
+            icon: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 M7 10l5 5 5-5 M12 15V3",
+          },
+        ].map((item) => (
+          <div class="group rounded-2xl border border-foreground/10 bg-card p-8 transition-colors hover:border-primary/30">
+            <div class="mb-4 flex items-center gap-4">
+              <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d={item.icon} />
+                </svg>
+              </div>
+              <span class="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+                Paso {item.step}
+              </span>
+            </div>
+            <h3 class="font-display text-xl">{item.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted-foreground">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="border-t border-foreground/10 bg-foreground text-background">
+    <div class="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="font-mono text-xs uppercase tracking-[0.25em] text-background/60">
+          ¿Listo para empezar?
+        </p>
+        <h2 class="mt-4 font-display text-4xl leading-tight md:text-5xl">
+          Hagamos tu disco realidad
+        </h2>
+        <p class="mt-4 text-background/70 md:text-lg">
+          Escríbenos con los detalles de tu proyecto. Respondemos en menos de 24 horas.
+        </p>
+        <a
+          href="mailto:estudio@anuro.club?subject=Nuevo proyecto"
+          class="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3.5 font-mono text-xs uppercase tracking-wider text-primary-foreground transition-transform hover:-translate-y-0.5"
+        >
+          Contactar al estudio
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"></path>
+            <path d="m12 5 7 7-7 7"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
