@@ -2,7 +2,7 @@
 
 ## Sobre el Proyecto
 
-Anuro (muro-club) es un proyecto web moderno estructurado para separar la experiencia del usuario (Frontend) y la gestión de contenido (Backend/CMS). Está diseñado para ser rápido, escalable y brindar una excelente experiencia tanto a los desarrolladores como a los creadores de contenido.
+Anuro (blog-disquera) es un proyecto web moderno estructurado para separar la experiencia del usuario (Frontend) y la gestión de contenido (Backend/CMS). Está diseñado para ser rápido, escalable y brindar una excelente experiencia tanto a los desarrolladores como a los creadores de contenido.
 
 ## Tecnologías Principales
 
@@ -44,7 +44,7 @@ Asegúrate de tener instalado [Node.js](https://nodejs.org/) (versión 18+ recom
 ### 1. Clonar el repositorio
 
 ```bash
-git clone <url-del-repositorio>
+git clone <https://github.com/Jirevelaz/Anuro>
 cd Anuro
 ```
 
