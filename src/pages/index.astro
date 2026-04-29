@@ -4,11 +4,19 @@ import BaseLayout from "../layouts/BaseLayout.astro"
 import ProductCard from "../components/ProductCard.astro"
 import CollectionNav from "../components/CollectionNav.astro"
 import ProductCarousel from "../components/ProductCarousel.astro"
-import { discoDelMes, edicionesEspeciales, preventas } from "../data/products"
+import { sanityClient } from "sanity:client"
 
-const featured = preventas.slice(0, 8)
-const recents = discoDelMes.slice(0, 8)
-const editions = edicionesEspeciales.slice(0, 8)
+const PRODUCT_FIELDS = `_id, title, "slug": slug.current, artist, coverImage, price, badges, collection`
+
+const featured = await sanityClient.fetch(
+  `*[_type == "release" && collection == "preventas"] | order(_createdAt desc)[0...8] { ${PRODUCT_FIELDS} }`
+)
+const recents = await sanityClient.fetch(
+  `*[_type == "release" && collection == "disco-del-mes"] | order(_createdAt desc)[0...8] { ${PRODUCT_FIELDS} }`
+)
+const editions = await sanityClient.fetch(
+  `*[_type == "release" && collection == "ediciones-especiales"] | order(_createdAt desc)[0...8] { ${PRODUCT_FIELDS} }`
+)
 ---
 
 <BaseLayout>
