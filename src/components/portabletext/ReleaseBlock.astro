@@ -3,57 +3,59 @@ import { urlFor } from "../../lib/sanity"
 
 export interface Props {
   node: {
-    release?: {
+    releaseReference?: {
       title: string
+      slug: { current: string }
       artist: string
       coverImage: any
-      slug: { current: string }
-      price: number
     }
   }
 }
 
 const { node } = Astro.props
-const release = node.release
+const release = node.releaseReference
 ---
 
 {release ? (
-  <aside class="my-14 relative w-[calc(100%+2rem)] -ml-4 md:w-[110%] md:-ml-[5%] lg:w-[120%] lg:-ml-[10%] max-w-[100vw]">
-    <a
-      href={`/releases/${release.slug.current}`}
-      class="group flex flex-col sm:flex-row gap-6 p-6 md:p-8 rounded-none md:rounded-3xl border-y md:border border-foreground/10 bg-muted/30 hover:bg-card hover:border-foreground/30 transition-all shadow-sm hover:shadow-md"
-    >
-      <!-- Cover -->
-      {release.coverImage && (
-        <div class="w-32 h-32 shrink-0 rounded-lg overflow-hidden bg-muted shadow-md">
-          <img
-            src={urlFor(release.coverImage).width(256).height(256).format("webp").url()}
-            alt={release.title}
-            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            loading="lazy"
-          />
+  <aside class="full-bleed-figure my-14">
+    <div class="max-w-4xl mx-auto px-4 md:px-8">
+      <a
+        href={`/releases/${release.slug.current}`}
+        class="group flex flex-col sm:flex-row gap-6 p-6 md:p-8 rounded-none md:rounded-3xl border-y md:border border-foreground/10 bg-muted/30 hover:bg-card hover:border-foreground/30 transition-all shadow-sm hover:shadow-md"
+      >
+        {release.coverImage && (
+          <div class="w-full sm:w-48 shrink-0">
+            <div class="aspect-square rounded-lg overflow-hidden bg-muted shadow-md group-hover:shadow-lg transition-shadow">
+              <img
+                src={urlFor(release.coverImage).width(400).height(400).format("webp").url()}
+                alt={`Portada de ${release.title}`}
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        )}
+        <div class="flex flex-col justify-center">
+          <div class="text-xs font-mono tracking-widest uppercase text-primary mb-2">Lanzamiento Referenciado</div>
+          <h3 class="font-display text-2xl md:text-3xl mb-1 group-hover:text-primary transition-colors">{release.title}</h3>
+          <p class="text-lg text-muted-foreground">{release.artist}</p>
+          <div class="mt-6 flex items-center text-sm font-medium">
+            <span>Ver detalles</span>
+            <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </div>
         </div>
-      )}
-      
-      <!-- Info -->
-      <div class="flex flex-col justify-center flex-1">
-        <span class="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1">En la tienda</span>
-        <h4 class="font-display text-2xl leading-tight group-hover:text-primary transition-colors">
-          {release.title}
-        </h4>
-        <p class="text-sm text-muted-foreground mt-1 font-medium">{release.artist}</p>
-        
-        <div class="mt-4 flex items-center justify-between">
-          <span class="font-mono text-sm">${release.price?.toFixed(2)}</span>
-          <span class="font-mono text-xs uppercase tracking-wider bg-foreground text-background px-3 py-1.5 rounded-full group-hover:bg-primary transition-colors">
-            Ver disco
-          </span>
-        </div>
-      </div>
-    </a>
+      </a>
+    </div>
   </aside>
-) : (
-  <div class="p-4 bg-muted text-muted-foreground rounded-lg text-sm font-mono text-center">
-    El disco referenciado no fue encontrado o está oculto.
-  </div>
-)}
+) : null}
+
+<style>
+  .full-bleed-figure {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    position: relative;
+  }
+</style>

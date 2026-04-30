@@ -338,6 +338,7 @@ const currentUrl = Astro.url.href
     line-height: 1.8;
     color: var(--foreground);
     letter-spacing: -0.01em;
+    overflow: visible;
   }
 
   /* Make paragraphs look more like Substack (a bit more spaced, nice readability) */
@@ -395,7 +396,8 @@ const currentUrl = Astro.url.href
   }
 
   .portable-text :global(figure) {
-    margin: 3rem 0;
+    margin-top: 3rem;
+    margin-bottom: 3rem;
   }
   
   .portable-text :global(figure img) {

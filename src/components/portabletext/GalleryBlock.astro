@@ -16,13 +16,18 @@ const images = node.images || []
 ---
 
 {images.length > 0 && (
-  <figure class="my-14 relative w-[calc(100%+2rem)] -ml-4 md:w-[120%] md:-ml-[10%] lg:w-[130%] lg:-ml-[15%] max-w-[100vw]">
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 px-4 md:px-0">
+  <figure class="full-bleed-figure my-14">
+    <div class:list={[
+      "grid gap-2 px-4 md:px-8",
+      images.length === 1 && "grid-cols-1 max-w-4xl mx-auto",
+      images.length === 2 && "grid-cols-2",
+      images.length >= 3 && "grid-cols-2 md:grid-cols-3",
+    ]}>
       {images.map((img) => (
         <div class="overflow-hidden rounded-xl bg-muted aspect-[4/3]">
           <img
-            src={urlFor(img).width(800).height(600).format("webp").url()}
-            alt={img.alt || "Imagen de galería"}
+            src={urlFor(img).width(900).height(675).format("webp").url()}
+            alt={img.alt || ""}
             class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
             loading="lazy"
           />
@@ -31,3 +36,12 @@ const images = node.images || []
     </div>
   </figure>
 )}
+
+<style>
+  .full-bleed-figure {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    position: relative;
+  }
+</style>
