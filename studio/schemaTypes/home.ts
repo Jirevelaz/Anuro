@@ -2,7 +2,7 @@ import {defineType, defineField, defineArrayMember} from 'sanity'
 import {HomeIcon} from '@sanity/icons'
 
 export const home = defineType({
-  name: 'home',
+  name: 'homeSettings',
   title: 'Página de Inicio',
   type: 'document',
   icon: HomeIcon,
@@ -14,66 +14,71 @@ export const home = defineType({
     }),
     defineField({
       name: 'mainHero',
-      title: 'Información del Disco del Mes (Arriba)',
+      title: 'Sección Principal (Frase de arriba)',
       type: 'object',
-      description: 'Configura el disco que aparece destacado al principio de la página.',
+      description: 'Configura la frase de bienvenida y las estadísticas (números).',
       fields: [
         defineField({name: 'title', type: 'string', title: 'Título Principal (Ej: Pon una rana...)'}),
-        defineField({name: 'heroLabel', type: 'string', title: 'Etiqueta superior (Ej: Disco del Mes)'}),
-        defineField({name: 'heroArtist', type: 'string', title: 'Artista (Ej: Robber Robber)'}),
-        defineField({name: 'heroTitle', type: 'string', title: 'Título del álbum'}),
-        defineField({name: 'heroDescription', type: 'text', title: 'Breve descripción del disco', rows: 3}),
+        defineField({name: 'description', type: 'text', title: 'Descripción de bienvenida', rows: 3}),
         defineField({
-          name: 'heroBullets',
-          title: 'Puntos clave del disco',
+          name: 'stats',
+          title: 'Nuestras Cifras (Estadísticas)',
           type: 'array',
-          description: 'Añade pequeñas frases descriptivas (Ej: Edición de 500 copias)',
-          of: [defineArrayMember({type: 'string', title: 'Punto destacado'})]
+          description: 'Los números que aparecen resaltados (Ej: +10 discos enviados).',
+          of: [
+            defineArrayMember({
+              type: 'object',
+              fields: [
+                defineField({name: 'label', type: 'string', title: 'Etiqueta (Ej: años curando)'}),
+                defineField({name: 'value', type: 'string', title: 'Valor (Ej: +1)'}),
+              ]
+            })
+          ]
         }),
       ]
+    }),
+    defineField({
+      name: 'heroLabel',
+      title: 'Etiqueta del Disco del Mes (Ej: Disco del Mes · Mayo)',
+      type: 'string',
+    }),
+    defineField({
+      name: 'heroArtist',
+      title: 'Artista del Mes',
+      type: 'string',
+    }),
+    defineField({
+      name: 'heroTitle',
+      title: 'Título del Álbum del Mes',
+      type: 'string',
+    }),
+    defineField({
+      name: 'heroDescription',
+      title: 'Descripción del Disco del Mes',
+      type: 'text',
+      rows: 3,
+    }),
+    defineField({
+      name: 'heroBullets',
+      title: 'Puntos clave del disco (Lista)',
+      type: 'array',
+      of: [defineArrayMember({type: 'string'})]
     }),
     defineField({
       name: 'heroImage',
       title: 'Imagen Destacada del Disco',
       type: 'image',
-      description: 'Sube la portada o una foto artística del disco.',
-      options: {
-        hotspot: true,
-      },
+      options: { hotspot: true },
     }),
     defineField({
       name: 'heroBadge',
-      title: 'Pequeño círculo sobre la imagen',
+      title: 'Círculo sobre la imagen (Ej: #84 · 2026)',
       type: 'string',
-      description: 'Ejemplo: #84 · 2026',
     }),
     defineField({
       name: 'heroLink',
-      title: '¿A dónde lleva el botón?',
+      title: 'Link del botón (Ej: /collections/disco-del-mes)',
       type: 'string',
-      description: 'Escribe /releases/nombre-del-disco o un link externo.',
-    }),
-    defineField({
-      name: 'description',
-      title: 'Descripción de ANURO (Debajo del disco)',
-      type: 'text',
-      description: 'Es el texto largo que explica qué es Anuro. Aparece justo después de la portada.',
-      rows: 4,
-    }),
-    defineField({
-      name: 'stats',
-      title: 'Nuestras Cifras (Estadísticas)',
-      type: 'array',
-      description: 'Los números que aparecen resaltados (Ej: +10 discos enviados).',
-      of: [
-        defineArrayMember({
-          type: 'object',
-          fields: [
-            defineField({name: 'label', type: 'string', title: 'Etiqueta (Ej: Discos enviados)'}),
-            defineField({name: 'value', type: 'string', title: 'Valor (Ej: +10)'}),
-          ]
-        })
-      ]
     }),
     defineField({
       name: 'benefits',
