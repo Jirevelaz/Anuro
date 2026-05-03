@@ -1,6 +1,12 @@
 ---
 import { Image } from "astro:assets"
+import { sanityClient } from "sanity:client"
+
 const year = new Date().getFullYear()
+
+const siteSettings = await sanityClient.fetch(`*[_type == "siteSettings"][0]`)
+const social = siteSettings?.socialLinks || {}
+const contact = siteSettings?.contactInfo || {}
 ---
 
 <footer class="relative mt-24 border-t border-foreground/15 bg-foreground text-background">
@@ -27,22 +33,21 @@ const year = new Date().getFullYear()
         Cuidamos los discos como cuida una rana las hojas: con paciencia, con paciencia y mucha música.
       </p>
       <div class="flex gap-2">
-        {
-          [
-            { label: "Instagram", icon: "instagram" },
-            { label: "Twitter", icon: "twitter" },
-            { label: "Facebook", icon: "facebook" },
-            { label: "Spotify", icon: "spotify" },
-          ].map((s) => (
-            <a
-              href="/"
-              aria-label={s.label}
-              class="grid h-10 w-10 place-items-center rounded-full border border-background/20 text-background/80 transition-colors hover:border-primary hover:text-primary"
-            >
-              <span class="font-mono text-[10px] uppercase">{s.icon[0]}</span>
-            </a>
-          ))
-        }
+        {social.instagram && (
+          <a href={social.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="grid h-10 w-10 place-items-center rounded-full border border-background/20 text-background/80 transition-colors hover:border-primary hover:text-primary">
+            <span class="font-mono text-[10px] uppercase">I</span>
+          </a>
+        )}
+        {social.facebook && (
+          <a href={social.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="grid h-10 w-10 place-items-center rounded-full border border-background/20 text-background/80 transition-colors hover:border-primary hover:text-primary">
+            <span class="font-mono text-[10px] uppercase">F</span>
+          </a>
+        )}
+        {social.youtube && (
+          <a href={social.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube" class="grid h-10 w-10 place-items-center rounded-full border border-background/20 text-background/80 transition-colors hover:border-primary hover:text-primary">
+            <span class="font-mono text-[10px] uppercase">Y</span>
+          </a>
+        )}
       </div>
     </div>
 
@@ -80,8 +85,8 @@ const year = new Date().getFullYear()
       <div>
         <h3 class="mb-4 font-display text-lg uppercase tracking-tight">Contacto</h3>
         <ul class="space-y-2.5 text-background/70">
-          <li>WhatsApp · 871 1856718</li>
-          <li>info@anuro.club</li>
+          {contact.whatsapp && <li>WhatsApp · {contact.whatsapp}</li>}
+          {contact.email && <li>{contact.email}</li>}
           <li>Ciudad de México</li>
         </ul>
       </div>

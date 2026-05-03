@@ -1,10 +1,15 @@
 ---
 import { Image } from "astro:assets"
+import { sanityClient } from "sanity:client"
+
 const path = Astro.url.pathname
 const isActive = (href: string) =>
   href === "/"
     ? path === "/"
     : path.startsWith(href)
+
+const siteSettings = await sanityClient.fetch(`*[_type == "siteSettings"][0]`)
+const social = siteSettings?.socialLinks || {}
 ---
 
 <header class="sticky top-0 z-40 border-b border-foreground/10 bg-background/85 backdrop-blur-md">
@@ -126,9 +131,9 @@ const isActive = (href: string) =>
     <div class="mt-auto pt-20">
       <p class="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-4">Síguenos</p>
       <div class="flex gap-4">
-        <a href="#" class="text-foreground hover:text-primary">IG</a>
-        <a href="#" class="text-foreground hover:text-primary">FB</a>
-        <a href="#" class="text-foreground hover:text-primary">YT</a>
+        {social.instagram && <a href={social.instagram} target="_blank" rel="noopener noreferrer" class="text-foreground hover:text-primary">IG</a>}
+        {social.facebook && <a href={social.facebook} target="_blank" rel="noopener noreferrer" class="text-foreground hover:text-primary">FB</a>}
+        {social.youtube && <a href={social.youtube} target="_blank" rel="noopener noreferrer" class="text-foreground hover:text-primary">YT</a>}
       </div>
     </div>
   </nav>

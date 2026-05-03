@@ -13,6 +13,12 @@ const services = await sanityClient.fetch(
   }`
 )
 
+const pageData = await sanityClient.fetch(`*[_type == "studioPage"][0]`)
+const hero = pageData?.hero || {}
+const process = pageData?.process || {}
+const processSteps = process.steps || []
+const cta = pageData?.cta || {}
+
 // ── Helpers ──
 function formatPrice(price: number) {
   return new Intl.NumberFormat("es-MX", {
@@ -35,16 +41,15 @@ function formatPrice(price: number) {
       <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div class="max-w-2xl">
           <p class="font-mono text-xs uppercase tracking-[0.25em] text-primary">
-            Estudio de Producción
+            {hero.label || "Estudio de Producción"}
           </p>
           <h1 class="mt-4 font-display text-5xl leading-[0.95] tracking-tight md:text-7xl lg:text-8xl">
-            Tu disco,<br />
-            <span class="text-primary">tarifa plana</span>.
+            {hero.title || "Tu disco,"}<br />
+            <span class="text-primary">{hero.highlight || "tarifa plana"}</span>.
           </h1>
         </div>
         <p class="max-w-sm text-muted-foreground md:text-right md:text-lg">
-          Sin costos ocultos, sin suscripciones. Cada servicio tiene un precio fijo
-          para que te concentres en lo que importa: la música.
+          {hero.description || "Sin costos ocultos, sin suscripciones. Cada servicio tiene un precio fijo para que te concentres en lo que importa: la música."}
         </p>
       </div>
     </div>
@@ -169,7 +174,7 @@ function formatPrice(price: number) {
 
                 {/* CTA Button */}
                 <a
-                  href="mailto:estudio@anuro.club?subject=Consulta sobre servicio: {service.title}"
+                  href={`mailto:estudio@anuro.club?subject=Consulta sobre servicio: ${service.title}`}
                   class:list={[
                     "mt-10 inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 font-mono text-xs uppercase tracking-wider transition-all duration-300",
                     isHighlighted
@@ -205,49 +210,36 @@ function formatPrice(price: number) {
     <div class="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24">
       <div class="text-center">
         <p class="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
-          Así trabajamos
+          {process.label || "Así trabajamos"}
         </p>
         <h2 class="mx-auto mt-2 max-w-2xl font-display text-3xl leading-tight tracking-tight md:text-4xl lg:text-5xl">
-          Proceso <span class="hand-underline">simple</span>, resultado profesional
+          {process.title || "Proceso simple, resultado profesional"}
         </h2>
       </div>
 
       <div class="mt-14 grid gap-8 md:grid-cols-3">
-        {[
-          {
-            step: "01",
-            title: "Escríbenos",
-            desc: "Cuéntanos tu proyecto, estilo y referencias. Nos ponemos de acuerdo en objetivos y tiempos.",
-            icon: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z",
-          },
-          {
-            step: "02",
-            title: "Producimos",
-            desc: "Trabajamos en tu proyecto con comunicación constante. Rondas de revisión incluidas en la tarifa.",
-            icon: "M9 18V5l12-2v13 M9 9l12-2",
-          },
-          {
-            step: "03",
-            title: "Entregamos",
-            desc: "Recibes los archivos finales en alta resolución, listos para distribución y plataformas.",
-            icon: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 M7 10l5 5 5-5 M12 15V3",
-          },
-        ].map((item) => (
-          <div class="group rounded-2xl border border-foreground/10 bg-card p-8 transition-colors hover:border-primary/30">
-            <div class="mb-4 flex items-center gap-4">
-              <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d={item.icon} />
-                </svg>
+        {
+          processSteps.length > 0 ? (
+            processSteps.map((item: any, i: number) => (
+              <div class="group rounded-2xl border border-foreground/10 bg-card p-8 transition-colors hover:border-primary/30">
+                <div class="mb-4 flex items-center gap-4">
+                  <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                      <path d={item.icon || "M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"} />
+                    </svg>
+                  </div>
+                  <span class="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+                    Paso {String(i + 1).padStart(2, '0')}
+                  </span>
+                </div>
+                <h3 class="font-display text-xl">{item.title}</h3>
+                <p class="mt-2 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
               </div>
-              <span class="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-                Paso {item.step}
-              </span>
-            </div>
-            <h3 class="font-display text-xl">{item.title}</h3>
-            <p class="mt-2 text-sm leading-relaxed text-muted-foreground">{item.desc}</p>
-          </div>
-        ))}
+            ))
+          ) : (
+            <p class="text-muted-foreground col-span-full text-center">Cargando proceso...</p>
+          )
+        }
       </div>
     </div>
   </section>
@@ -257,19 +249,19 @@ function formatPrice(price: number) {
     <div class="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24">
       <div class="mx-auto max-w-2xl text-center">
         <p class="font-mono text-xs uppercase tracking-[0.25em] text-background/60">
-          ¿Listo para empezar?
+          {cta.label || "¿Listo para empezar?"}
         </p>
         <h2 class="mt-4 font-display text-4xl leading-tight md:text-5xl">
-          Hagamos tu disco realidad
+          {cta.title || "Hagamos tu disco realidad"}
         </h2>
         <p class="mt-4 text-background/70 md:text-lg">
-          Escríbenos con los detalles de tu proyecto. Respondemos en menos de 24 horas.
+          {cta.description || "Escríbenos con los detalles de tu proyecto. Respondemos en menos de 24 horas."}
         </p>
         <a
-          href="mailto:estudio@anuro.club?subject=Nuevo proyecto"
+          href={`mailto:estudio@anuro.club?subject=${cta.buttonText || 'Nuevo proyecto'}`}
           class="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3.5 font-mono text-xs uppercase tracking-wider text-primary-foreground transition-transform hover:-translate-y-0.5"
         >
-          Contactar al estudio
+          {cta.buttonText || "Contactar al estudio"}
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M5 12h14"></path>
             <path d="m12 5 7 7-7 7"></path>
@@ -279,3 +271,4 @@ function formatPrice(price: number) {
     </div>
   </section>
 </BaseLayout>
+

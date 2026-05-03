@@ -8,6 +8,29 @@ export const home = defineType({
   icon: HomeIcon,
   fields: [
     defineField({
+      name: 'mainHero',
+      title: 'Hero Principal (Arriba)',
+      type: 'object',
+      fields: [
+        defineField({name: 'title', type: 'string', title: 'Título principal', description: 'Ej: Pon una rana en tu tornamesa.'}),
+        defineField({name: 'description', type: 'text', title: 'Descripción'}),
+        defineField({
+          name: 'stats',
+          title: 'Estadísticas',
+          type: 'array',
+          of: [
+            defineArrayMember({
+              type: 'object',
+              fields: [
+                defineField({name: 'value', type: 'string', title: 'Valor (Ej: +8)'}),
+                defineField({name: 'label', type: 'string', title: 'Etiqueta (Ej: años curando)'}),
+              ]
+            })
+          ]
+        })
+      ]
+    }),
+    defineField({
       name: 'heroLabel',
       title: 'Hero Label (Subtítulo)',
       type: 'string',
@@ -57,11 +80,44 @@ export const home = defineType({
       type: 'string',
       description: 'Ejemplo: /collections/disco-del-mes o /releases/slug-del-disco',
     }),
+    defineField({
+      name: 'benefits',
+      title: 'Beneficios (Por qué ANURO)',
+      type: 'object',
+      fields: [
+        defineField({name: 'title', type: 'string', title: 'Título principal', description: 'Ej: Más que vinilos, una experiencia'}),
+        defineField({
+          name: 'cards',
+          title: 'Tarjetas de Beneficios',
+          type: 'array',
+          of: [
+            defineArrayMember({
+              type: 'object',
+              fields: [
+                defineField({name: 'title', type: 'string', title: 'Título'}),
+                defineField({name: 'description', type: 'text', title: 'Descripción'}),
+                defineField({name: 'icon', type: 'string', title: 'SVG Path (Dejar el default si no sabes cambiarlo)'})
+              ]
+            })
+          ]
+        })
+      ]
+    }),
+    defineField({
+      name: 'distributionTeaser',
+      title: 'Banner de Distribución (Abajo)',
+      type: 'object',
+      fields: [
+        defineField({name: 'title', type: 'string', title: 'Título principal'}),
+        defineField({name: 'description', type: 'text', title: 'Descripción'}),
+        defineField({name: 'image', type: 'image', title: 'Imagen de fondo', options: {hotspot: true}}),
+      ]
+    })
   ],
   preview: {
     prepare() {
       return {
-        title: 'Configuración del Inicio (Hero)',
+        title: 'Configuración de Inicio (Home)',
       }
     },
   },

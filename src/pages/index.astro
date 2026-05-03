@@ -19,7 +19,17 @@ const editions = await sanityClient.fetch(
   `*[_type == "release" && collection == "ediciones-especiales"] | order(_createdAt desc)[0...8] { ${PRODUCT_FIELDS} }`
 )
 const homeSettings = await sanityClient.fetch(`*[_type == "homeSettings"][0]`)
+const siteSettings = await sanityClient.fetch(`*[_type == "siteSettings"][0]`)
 
+// Main Hero (Top)
+const mainHero = homeSettings?.mainHero || {}
+const mainHeroStats = mainHero.stats || [
+  { value: "+8", label: "años curando" },
+  { value: "+120", label: "discos enviados" },
+  { value: "MX → US", label: "envío directo" },
+]
+
+// Disco del Mes Hero (Middle)
 const heroLabel = homeSettings?.heroLabel || "Disco del Mes · Mayo"
 const heroTitle = homeSettings?.heroTitle || "Two Wheels Move The Soul"
 const heroArtist = homeSettings?.heroArtist || "Robber Robber"
@@ -32,6 +42,30 @@ const heroBullets = homeSettings?.heroBullets || [
 const heroBadge = homeSettings?.heroBadge || "#84 · 2026"
 const heroLink = homeSettings?.heroLink || "/collections/disco-del-mes"
 const heroImageUrl = homeSettings?.heroImage ? urlFor(homeSettings.heroImage).width(800).height(600).format("webp").url() : "/images/club-hero.jpg"
+
+// Benefits
+const benefitsData = homeSettings?.benefits || {}
+const benefitsCards = benefitsData.cards || [
+  {
+    icon: "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5",
+    title: "Curado a mano",
+    description: "Cada disco pasa por nuestras manos. Escuchamos, seleccionamos y empacamos con cariño."
+  },
+  {
+    icon: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+    title: "Ediciones exclusivas",
+    description: "Prensajes de color, ilustraciones originales y materiales que no encontrarás en otro lado."
+  },
+  {
+    icon: "M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z",
+    title: "Comunidad",
+    description: "Acceso a preventas, eventos y la conversación con otros coleccionistas."
+  }
+]
+
+// Distribution Teaser
+const distTeaser = homeSettings?.distributionTeaser || {}
+const distTeaserImage = distTeaser.image ? urlFor(distTeaser.image).width(800).height(600).url() : "/images/listening-bar.jpg"
 ---
 
 <BaseLayout>
@@ -47,14 +81,11 @@ const heroImageUrl = homeSettings?.heroImage ? urlFor(homeSettings.heroImage).wi
         <p class="font-mono text-xs uppercase tracking-[0.22em] text-muted-foreground">
           Sello Discográfico Independiente · CDMX
         </p>
-        <h1 class="mt-3 font-display text-4xl leading-[1.1] tracking-tight md:text-5xl lg:text-6xl">
-          Pon una rana<br />
-          en tu tornamesa.
+        <h1 class="mt-3 font-display text-4xl leading-[1.1] tracking-tight md:text-5xl lg:text-6xl whitespace-pre-line">
+          {mainHero.title || "Pon una rana\nen tu tornamesa."}
         </h1>
         <p class="mt-6 max-w-md text-base leading-relaxed text-muted-foreground md:text-lg">
-          ANURO es un sello discográfico independiente curado a mano desde Ciudad de México.
-          Cada mes te enviamos un disco que vale la pena escuchar — y cuidar —
-          con ilustración exclusiva, prensaje de color y buena conversación.
+          {mainHero.description || "ANURO es un sello discográfico independiente curado a mano desde Ciudad de México. Cada mes te enviamos un disco que vale la pena escuchar — y cuidar — con ilustración exclusiva, prensaje de color y buena conversación."}
         </p>
         <div class="mt-8 flex flex-wrap gap-3">
           <a
@@ -74,14 +105,10 @@ const heroImageUrl = homeSettings?.heroImage ? urlFor(homeSettings.heroImage).wi
 
         <dl class="mt-10 grid max-w-md grid-cols-3 gap-2 border-t border-foreground/10 pt-6">
           {
-            [
-              { k: "+8", v: "años curando" },
-              { k: "+120", v: "discos enviados" },
-              { k: "MX → US", v: "envío directo" },
-            ].map((s) => (
+            mainHeroStats.map((s: any) => (
               <div>
-                <dt class="font-display text-2xl">{s.k}</dt>
-                <dd class="text-xs text-muted-foreground">{s.v}</dd>
+                <dt class="font-display text-2xl">{s.value}</dt>
+                <dd class="text-xs text-muted-foreground">{s.label}</dd>
               </div>
             ))
           }
@@ -146,7 +173,7 @@ const heroImageUrl = homeSettings?.heroImage ? urlFor(homeSettings.heroImage).wi
         [...Array(12)].map(() => (
           <span class="flex shrink-0 items-center gap-6 px-6 font-display text-sm tracking-wide text-background md:text-base">
             <span class="inline-block h-1.5 w-1.5 rounded-full bg-accent" />
-            EL ALMA DE LA MÚSICA GIRA EN VINILO
+            {siteSettings?.marqueeText || "EL ALMA DE LA MÚSICA GIRA EN VINILO"}
           </span>
         ))
       }
@@ -242,28 +269,12 @@ const heroImageUrl = homeSettings?.heroImage ? urlFor(homeSettings.heroImage).wi
         Por qué ANURO
       </p>
       <h2 class="mx-auto mt-2 max-w-2xl font-display text-3xl leading-tight tracking-tight md:text-4xl lg:text-5xl">
-        Más que vinilos, una <span class="hand-underline">experiencia</span>
+        {benefitsData.title || "Más que vinilos, una experiencia"}
       </h2>
     </div>
     
     <div class="mt-12 grid gap-6 md:grid-cols-3">
-      {[
-        {
-          icon: "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5",
-          title: "Curado a mano",
-          desc: "Cada disco pasa por nuestras manos. Escuchamos, seleccionamos y empacamos con cariño."
-        },
-        {
-          icon: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
-          title: "Ediciones exclusivas",
-          desc: "Prensajes de color, ilustraciones originales y materiales que no encontrarás en otro lado."
-        },
-        {
-          icon: "M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z",
-          title: "Comunidad",
-          desc: "Acceso a preventas, eventos y la conversación con otros coleccionistas."
-        }
-      ].map((b) => (
+      {benefitsCards.map((b: any) => (
         <div class="group rounded-3xl border border-foreground/10 bg-card p-8 transition-colors hover:border-primary/30">
           <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -271,7 +282,7 @@ const heroImageUrl = homeSettings?.heroImage ? urlFor(homeSettings.heroImage).wi
             </svg>
           </div>
           <h3 class="font-display text-xl">{b.title}</h3>
-          <p class="mt-2 text-sm leading-relaxed text-muted-foreground">{b.desc}</p>
+          <p class="mt-2 text-sm leading-relaxed text-muted-foreground">{b.description || b.desc}</p>
         </div>
       ))}
     </div>
@@ -284,13 +295,11 @@ const heroImageUrl = homeSettings?.heroImage ? urlFor(homeSettings.heroImage).wi
       class="group relative grid overflow-hidden rounded-3xl border border-foreground/10 bg-card md:grid-cols-2"
     >
       <div class="relative aspect-[4/3] md:aspect-auto">
-        <Image
-          src="/images/listening-bar.jpg"
-          alt="Listening bar"
+        <img
+          src={distTeaserImage}
+          alt={distTeaser.title || "Listening bar"}
           class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           loading="lazy"
-          width={800}
-          height={600}
         />
       </div>
       <div class="flex flex-col justify-center gap-5 p-8 md:p-14">
@@ -298,11 +307,10 @@ const heroImageUrl = homeSettings?.heroImage ? urlFor(homeSettings.heroImage).wi
           ¿Tienes una tienda, un bar, un proyecto?
         </p>
         <h3 class="font-display text-3xl leading-tight tracking-tight md:text-4xl lg:text-5xl">
-          Distribución <span class="hand-underline">mayorista</span>
+          {distTeaser.title || "Distribución mayorista"}
         </h3>
         <p class="max-w-md text-muted-foreground">
-          Trabajamos con listening bars, tiendas independientes, restaurantes y
-          coleccionistas. Importación directa, sin intermediarios.
+          {distTeaser.description || "Trabajamos con listening bars, tiendas independientes, restaurantes y coleccionistas. Importación directa, sin intermediarios."}
         </p>
         <span class="inline-flex w-fit items-center gap-2 font-display text-sm tracking-wide text-foreground">
           Conocer más
