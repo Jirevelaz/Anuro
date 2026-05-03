@@ -51,12 +51,13 @@ const contact = siteSettings?.contactInfo || {}
       </div>
     </div>
 
-    <div>
+    <div id="newsletter-container">
       <h3 class="font-display text-lg uppercase tracking-tight">Boletín</h3>
-      <p class="mt-2 text-sm text-background/70">
+      <p id="newsletter-text" class="mt-2 text-sm text-background/70">
         Suscríbete y recibe primero las nuevas ediciones y preventas.
       </p>
       <form 
+        id="newsletter-form"
         name="newsletter"
         method="POST"
         data-netlify="true"
@@ -77,7 +78,35 @@ const contact = siteSettings?.contactInfo || {}
           Enviar
         </button>
       </form>
+      <p id="newsletter-success" class="hidden mt-4 text-sm font-semibold text-accent">
+        ¡Gracias! Te has suscrito correctamente.
+      </p>
     </div>
+
+    <script is:inline>
+      const newsForm = document.getElementById('newsletter-form');
+      const newsSuccess = document.getElementById('newsletter-success');
+      const newsText = document.getElementById('newsletter-text');
+
+      if (newsForm) {
+        newsForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const formData = new FormData(newsForm);
+          
+          fetch('/', {
+            method: 'POST',
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams(formData).toString()
+          })
+          .then(() => {
+            newsForm.classList.add('hidden');
+            newsText.classList.add('hidden');
+            newsSuccess.classList.remove('hidden');
+          })
+          .catch((error) => console.error('Error:', error));
+        });
+      }
+    </script>
 
     <div class="grid grid-cols-2 gap-8 text-sm">
       <div>
