@@ -14,11 +14,11 @@ const { node } = Astro.props
 
 {node.asset && (
   <figure class="full-bleed-figure my-14">
-    <div class="overflow-hidden md:rounded-2xl bg-muted flex justify-center">
+    <div class="flex justify-center">
       <img
         src={urlFor(node).width(1200).format("webp").url()}
         alt={node.alt || node.caption || "Imagen del artículo"}
-        class="w-full h-auto max-h-[75vh] object-contain"
+        class="h-auto max-h-[75vh] object-contain rounded-xl md:rounded-2xl shadow-sm"
         loading="lazy"
       />
     </div>
