@@ -16,11 +16,6 @@ export default defineConfig({
   ],
   vite: {
     plugins: [tailwind()],
-    build: {
-      rollupOptions: {
-        external: ['@sanity/client', 'sanity:client']
-      }
-    },
     server: {
       host: true,
       allowedHosts: true,
