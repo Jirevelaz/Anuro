@@ -14,11 +14,11 @@ const { node } = Astro.props
 
 {node.asset && (
   <figure class="full-bleed-figure my-14">
-    <div class="overflow-hidden md:rounded-2xl bg-muted">
+    <div class="flex justify-center">
       <img
-        src={urlFor(node).width(1400).format("webp").url()}
+        src={urlFor(node).width(1200).format("webp").url()}
         alt={node.alt || node.caption || "Imagen del artículo"}
-        class="w-full h-auto object-cover"
+        class="h-auto max-h-[75vh] object-contain rounded-xl md:rounded-2xl shadow-sm"
         loading="lazy"
       />
     </div>
@@ -33,14 +33,13 @@ const { node } = Astro.props
 <style>
   .full-bleed-figure {
     /*
-     * El truco: salirse del contenedor usando 50vw.
-     * width: 100vw hace que el elemento mida el ancho de la ventana.
-     * margin-left: -50vw + 50% lo centra correctamente.
-     * Funciona sin importar cuántos contenedores padre haya.
+     * Breakout style: wider than text but capped for readability.
+     * matching hero width (approx 900px)
      */
     width: 100vw;
-    margin-left: calc(50% - 50vw);
-    margin-right: calc(50% - 50vw);
+    max-width: 900px;
+    margin-left: calc(50% - min(50vw, 450px));
+    margin-right: calc(50% - min(50vw, 450px));
     position: relative;
   }
 </style>
