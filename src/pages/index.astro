@@ -5,6 +5,7 @@ import ProductCard from "../components/ProductCard.astro"
 import CollectionNav from "../components/CollectionNav.astro"
 import ProductCarousel from "../components/ProductCarousel.astro"
 import { sanityClient } from "sanity:client"
+import { urlFor } from "../lib/sanity"
 
 const PRODUCT_FIELDS = `_id, title, "slug": slug.current, artist, coverImage, price, badges, collection`
 
@@ -17,6 +18,20 @@ const recents = await sanityClient.fetch(
 const editions = await sanityClient.fetch(
   `*[_type == "release" && collection == "ediciones-especiales"] | order(_createdAt desc)[0...8] { ${PRODUCT_FIELDS} }`
 )
+const homeSettings = await sanityClient.fetch(`*[_type == "homeSettings"][0]`)
+
+const heroLabel = homeSettings?.heroLabel || "Disco del Mes · Mayo"
+const heroTitle = homeSettings?.heroTitle || "Two Wheels Move The Soul"
+const heroArtist = homeSettings?.heroArtist || "Robber Robber"
+const heroDescription = homeSettings?.heroDescription || "Indie-rock crudo del Vermont profundo, con ilustración de portada por Chemtots. Vinilo de color humo, gatefold con letras impresas y una postal firmada."
+const heroBullets = homeSettings?.heroBullets || [
+  "Edición de 500 copias numeradas",
+  "Postal firmada por la banda",
+  "Envío estimado: 20 de mayo"
+]
+const heroBadge = homeSettings?.heroBadge || "#84 · 2026"
+const heroLink = homeSettings?.heroLink || "/collections/disco-del-mes"
+const heroImageUrl = homeSettings?.heroImage ? urlFor(homeSettings.heroImage).width(800).height(600).format("webp").url() : "/images/club-hero.jpg"
 ---
 
 <BaseLayout>
@@ -152,35 +167,27 @@ const editions = await sanityClient.fetch(
     <div class="relative mx-auto grid max-w-7xl gap-10 px-4 py-16 md:grid-cols-12 md:gap-12 md:px-8 md:py-20">
       <div class="md:col-span-5">
         <p class="font-mono text-xs uppercase tracking-[0.22em] text-background/60">
-          Disco del Mes · Mayo
+          {heroLabel}
         </p>
         <h2 class="mt-3 font-display text-4xl leading-[1.1] tracking-tight md:text-5xl lg:text-6xl">
-          Robber Robber
+          {heroArtist}
           <br />
-          <span class="text-accent">Two Wheels Move The Soul</span>
+          <span class="text-accent">{heroTitle}</span>
         </h2>
         <p class="mt-5 max-w-md text-background/75 leading-relaxed">
-          Indie-rock crudo del Vermont profundo, con ilustración de portada por
-          <span class="text-background">Chemtots</span>. Vinilo de color humo,
-          gatefold con letras impresas y una postal firmada.
+          {heroDescription}
         </p>
         <ul class="mt-6 space-y-2 text-sm text-background/80">
-          <li class="flex items-center gap-2">
-            <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>
-            Edición de 500 copias numeradas
-          </li>
-          <li class="flex items-center gap-2">
-            <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>
-            Postal firmada por la banda
-          </li>
-          <li class="flex items-center gap-2">
-            <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>
-            Envío estimado: 20 de mayo
-          </li>
+          {heroBullets.map((bullet: string) => (
+            <li class="flex items-center gap-2">
+              <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>
+              {bullet}
+            </li>
+          ))}
         </ul>
         <div class="mt-8 flex flex-wrap gap-3">
           <a
-            href="/collections/disco-del-mes"
+            href={heroLink}
             class="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-display text-sm tracking-wide text-accent-foreground transition-transform hover:-translate-y-0.5"
           >
             Comprar ahora
@@ -196,16 +203,16 @@ const editions = await sanityClient.fetch(
       </div>
       <div class="md:col-span-7">
         <div class="relative aspect-[4/3] overflow-hidden rounded-3xl border border-background/10">
-          <Image
-            src="/images/club-hero.jpg"
-            alt="Ilustración del Disco del Mes — Two Wheels Move The Soul"
+          <img
+            src={heroImageUrl}
+            alt={`Ilustración del Disco del Mes — ${heroTitle}`}
             class="h-full w-full object-cover"
             loading="lazy"
-            width={800}
-            height={600}
+            width="800"
+            height="600"
           />
           <div class="absolute left-4 top-4 rounded-full bg-accent px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-accent-foreground">
-            #84 · 2026
+            {heroBadge}
           </div>
         </div>
       </div>
