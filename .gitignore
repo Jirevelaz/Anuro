@@ -18,3 +18,5 @@ node_modules
 # Astro ignores
 .astro/
 dist/
+# Local Netlify folder
+.netlify
