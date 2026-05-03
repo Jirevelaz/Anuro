@@ -14,11 +14,11 @@ const { node } = Astro.props
 
 {node.asset && (
   <figure class="full-bleed-figure my-14">
-    <div class="overflow-hidden md:rounded-2xl bg-muted">
+    <div class="overflow-hidden md:rounded-2xl bg-muted flex justify-center">
       <img
-        src={urlFor(node).width(1400).format("webp").url()}
+        src={urlFor(node).width(1200).format("webp").url()}
         alt={node.alt || node.caption || "Imagen del artículo"}
-        class="w-full h-auto object-cover"
+        class="w-full h-auto max-h-[75vh] object-contain"
         loading="lazy"
       />
     </div>
@@ -33,14 +33,13 @@ const { node } = Astro.props
 <style>
   .full-bleed-figure {
     /*
-     * El truco: salirse del contenedor usando 100vw.
-     * Limitamos el ancho máximo a 1200px para que no sea gigante en PC.
-     * margin-left: calc(50% - min(50vw, 600px)) lo centra correctamente.
+     * Breakout style: wider than text but capped for readability.
+     * matching hero width (approx 900px)
      */
     width: 100vw;
-    max-width: 1200px;
-    margin-left: calc(50% - min(50vw, 600px));
-    margin-right: calc(50% - min(50vw, 600px));
+    max-width: 900px;
+    margin-left: calc(50% - min(50vw, 450px));
+    margin-right: calc(50% - min(50vw, 450px));
     position: relative;
   }
 </style>
