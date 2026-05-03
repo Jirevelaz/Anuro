@@ -54,6 +54,28 @@ export const home = defineType({
       description: 'Escribe /releases/nombre-del-disco o un link externo.',
     }),
     defineField({
+      name: 'description',
+      title: 'Descripción de ANURO (Debajo del disco)',
+      type: 'text',
+      description: 'Es el texto largo que explica qué es Anuro. Aparece justo después de la portada.',
+      rows: 4,
+    }),
+    defineField({
+      name: 'stats',
+      title: 'Nuestras Cifras (Estadísticas)',
+      type: 'array',
+      description: 'Los números que aparecen resaltados (Ej: +10 discos enviados).',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          fields: [
+            defineField({name: 'label', type: 'string', title: 'Etiqueta (Ej: Discos enviados)'}),
+            defineField({name: 'value', type: 'string', title: 'Valor (Ej: +10)'}),
+          ]
+        })
+      ]
+    }),
+    defineField({
       name: 'benefits',
       title: 'Sección de Beneficios (Por qué ANURO)',
       type: 'object',
