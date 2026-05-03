@@ -23,7 +23,7 @@ const isActive = (href: string) =>
       <span class="hidden flex-col leading-none sm:flex">
         <span class="font-display text-2xl tracking-tight">ANURO</span>
         <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-          Club de vinilos · MX
+          Sello Discográfico Independiente · CDMX
         </span>
       </span>
     </a>
@@ -31,10 +31,10 @@ const isActive = (href: string) =>
     <nav class="hidden items-center gap-1 lg:flex" aria-label="Principal">
       {
         [
-          { href: "/blogs/news", label: "Bitácora" },
+          { href: "/bitacora", label: "Bitácora" },
           { href: "/collections/disco-del-mes", label: "Tienda" },
-          { href: "/pages/distribucion-y-mayoreo", label: "Distribución" },
-          { href: "/pages/planes", label: "Únete al Club" },
+          { href: "/distribucion", label: "Distribución" },
+          { href: "/estudio", label: "Estudio" },
         ].map((item) => (
           <a
             href={item.href}
@@ -63,8 +63,8 @@ const isActive = (href: string) =>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
       </button>
       <a
-        href="/pages/planes"
-        aria-label="Mi cuenta"
+        href="/estudio"
+        aria-label="Estudio"
         class="grid h-10 w-10 place-items-center rounded-full text-foreground transition-colors hover:bg-foreground/5"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>

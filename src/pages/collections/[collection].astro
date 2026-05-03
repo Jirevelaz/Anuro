@@ -1,0 +1,69 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro"
+import CollectionNav from "../../components/CollectionNav.astro"
+import CollectionToolbar from "../../components/CollectionToolbar.astro"
+import ProductCard from "../../components/ProductCard.astro"
+import { sanityClient } from "sanity:client"
+
+// ── Metadata por colección ──
+const COLLECTIONS: Record<string, { title: string; description: string }> = {
+  "disco-del-mes": {
+    title: "Disco del Mes",
+    description: "Cada mes una selección curada en vinilo exclusivo, prensada en cantidades limitadas.",
+  },
+  "ediciones-especiales": {
+    title: "Ediciones Especiales",
+    description: "Lanzamientos limitados, prensajes de color, gatefolds y artistas firmados — para coleccionistas serios.",
+  },
+  preventas: {
+    title: "Preventas",
+    description: "Asegura tu copia antes que nadie. Reservas abiertas, envíos cuando el disco aterriza en bodega.",
+  },
+  accesorios: {
+    title: "Accesorios",
+    description: "Merch, figuras, accesorios de tocadiscos y todo lo que no se puede poner a girar (pero sí lucir).",
+  },
+}
+
+// ── Generar rutas estáticas ──
+export function getStaticPaths() {
+  const slugs = ["disco-del-mes", "ediciones-especiales", "preventas", "accesorios"]
+  return slugs.map((slug) => ({
+    params: { collection: slug },
+  }))
+}
+
+const { collection } = Astro.params
+const meta = COLLECTIONS[collection!]
+
+if (!meta) {
+  return Astro.redirect("/collections/disco-del-mes")
+}
+
+const products = await sanityClient.fetch(
+  `*[_type == "release" && collection == $collection] | order(_createdAt desc) {
+    _id, title, "slug": slug.current, artist, coverImage, price, badges, collection
+  }`,
+  { collection }
+)
+---
+
+<BaseLayout title={`${meta.title} · ANURO`} description={meta.description}>
+  <CollectionNav active={collection} />
+
+  <section class="relative overflow-hidden border-b border-foreground/10 bg-card">
+    <div class="paper-grain absolute inset-0 opacity-40 pointer-events-none"></div>
+    <div class="relative mx-auto flex max-w-7xl flex-col gap-3 px-4 py-12 md:px-8 md:py-16">
+      <p class="font-mono text-xs uppercase tracking-[0.22em] text-muted-foreground">Colección</p>
+      <h1 class="font-display text-5xl leading-[0.95] tracking-tight md:text-6xl">{meta.title}</h1>
+      <p class="max-w-2xl text-muted-foreground md:text-lg">{meta.description}</p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-4 md:px-8">
+    <CollectionToolbar count={products.length} />
+    <div class="grid grid-cols-2 gap-x-5 gap-y-12 pb-16 md:grid-cols-4">
+      {products.map((p: any) => <ProductCard product={p} />)}
+    </div>
+  </section>
+</BaseLayout>

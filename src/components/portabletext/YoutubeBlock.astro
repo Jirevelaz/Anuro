@@ -1,0 +1,45 @@
+---
+export interface Props {
+  node: {
+    url: string
+  }
+}
+
+const { node } = Astro.props
+
+function getYoutubeId(url: string) {
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/
+  const match = url.match(regExp)
+  return match && match[2].length === 11 ? match[2] : null
+}
+
+const videoId = getYoutubeId(node.url)
+---
+
+{videoId ? (
+  <figure class="full-bleed-figure my-14">
+    <div class="relative w-full aspect-video overflow-hidden md:rounded-2xl bg-muted shadow-lg px-0 md:px-8">
+      <iframe
+        src={`https://www.youtube.com/embed/${videoId}`}
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        class="absolute top-0 left-0 w-full h-full"
+      ></iframe>
+    </div>
+  </figure>
+) : (
+  <div class="p-4 bg-red-500/10 text-red-500 rounded-lg text-sm font-mono">
+    URL de YouTube no válida: {node.url}
+  </div>
+)}
+
+<style>
+  .full-bleed-figure {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    position: relative;
+  }
+</style>

@@ -1,0 +1,61 @@
+---
+import { urlFor } from "../../lib/sanity"
+
+export interface Props {
+  node: {
+    releaseReference?: {
+      title: string
+      slug: { current: string }
+      artist: string
+      coverImage: any
+    }
+  }
+}
+
+const { node } = Astro.props
+const release = node.releaseReference
+---
+
+{release ? (
+  <aside class="full-bleed-figure my-14">
+    <div class="max-w-4xl mx-auto px-4 md:px-8">
+      <a
+        href={`/releases/${release.slug.current}`}
+        class="group flex flex-col sm:flex-row gap-6 p-6 md:p-8 rounded-none md:rounded-3xl border-y md:border border-foreground/10 bg-muted/30 hover:bg-card hover:border-foreground/30 transition-all shadow-sm hover:shadow-md"
+      >
+        {release.coverImage && (
+          <div class="w-full sm:w-48 shrink-0">
+            <div class="aspect-square rounded-lg overflow-hidden bg-muted shadow-md group-hover:shadow-lg transition-shadow">
+              <img
+                src={urlFor(release.coverImage).width(400).height(400).format("webp").url()}
+                alt={`Portada de ${release.title}`}
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        )}
+        <div class="flex flex-col justify-center">
+          <div class="text-xs font-mono tracking-widest uppercase text-primary mb-2">Lanzamiento Referenciado</div>
+          <h3 class="font-display text-2xl md:text-3xl mb-1 group-hover:text-primary transition-colors">{release.title}</h3>
+          <p class="text-lg text-muted-foreground">{release.artist}</p>
+          <div class="mt-6 flex items-center text-sm font-medium">
+            <span>Ver detalles</span>
+            <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </div>
+        </div>
+      </a>
+    </div>
+  </aside>
+) : null}
+
+<style>
+  .full-bleed-figure {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    position: relative;
+  }
+</style>

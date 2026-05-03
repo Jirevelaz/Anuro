@@ -1,0 +1,349 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro"
+import { PortableText } from "astro-portabletext"
+import { sanityClient } from "sanity:client"
+import { urlFor } from "../../lib/sanity"
+
+// ── Rutas estáticas: generar una página por cada release con slug ──
+export async function getStaticPaths() {
+  const releases = await sanityClient.fetch(
+    `*[_type == "release" && defined(slug.current)]{
+      "slug": slug.current
+    }`
+  )
+
+  return releases.map((r: any) => ({
+    params: { slug: r.slug },
+  }))
+}
+
+// ── Obtener el release completo por slug ──
+const { slug } = Astro.params
+
+const release = await sanityClient.fetch(
+  `*[_type == "release" && slug.current == $slug][0]{
+    _id,
+    title,
+    "slug": slug.current,
+    artist,
+    coverImage,
+    format,
+    buyUrl,
+    stockCount,
+    description
+  }`,
+  { slug }
+)
+
+if (!release) {
+  return Astro.redirect("/collections/disco-del-mes")
+}
+
+// ── Otros releases (para la sección "También te puede gustar") ──
+const otherReleases = await sanityClient.fetch(
+  `*[_type == "release" && _id != $id && defined(slug.current)] | order(_createdAt desc)[0...4]{
+    _id,
+    title,
+    "slug": slug.current,
+    artist,
+    coverImage,
+    format
+  }`,
+  { id: release._id }
+)
+
+// ── Constantes para el fetch client-side ──
+const SANITY_PROJECT_ID = "05wa67le"
+const SANITY_DATASET = "production"
+---
+
+<BaseLayout
+  title={`${release.title} — ${release.artist} · ANURO`}
+  description={`${release.title} de ${release.artist} en formato ${release.format}. Disponible en la tienda ANURO.`}
+>
+  <!-- RELEASE DETAIL -->
+  <section class="mx-auto max-w-7xl px-4 py-12 md:px-8 md:py-20">
+    <div class="grid gap-10 md:grid-cols-2 md:gap-16 lg:gap-20">
+
+      <!-- COVER IMAGE -->
+      <div class="relative">
+        <div class="release-cover aspect-square overflow-hidden rounded-2xl border border-foreground/10 bg-muted md:rounded-3xl">
+          {release.coverImage ? (
+            <img
+              src={urlFor(release.coverImage).width(800).height(800).format("webp").url()}
+              alt={`${release.title} — ${release.artist}`}
+              class="h-full w-full object-cover"
+              loading="eager"
+              width="800"
+              height="800"
+            />
+          ) : (
+            <div class="flex h-full w-full items-center justify-center bg-muted">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="text-muted-foreground/30">
+                <path d="M9 18V5l12-2v13"></path>
+                <circle cx="6" cy="18" r="3"></circle>
+                <circle cx="18" cy="16" r="3"></circle>
+              </svg>
+            </div>
+          )}
+        </div>
+        {/* Vinyl peek-out effect */}
+        <div class="vinyl-disc absolute -right-4 top-1/2 -z-10 hidden h-[85%] w-[85%] -translate-y-1/2 rounded-full bg-foreground md:block"></div>
+      </div>
+
+      <!-- DETAILS -->
+      <div class="flex flex-col justify-center">
+        {/* Breadcrumb */}
+        <nav class="mb-6 flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+          <a href="/collections/disco-del-mes" class="transition-colors hover:text-primary">Tienda</a>
+          <span class="text-foreground/30">›</span>
+          <span class="text-foreground/60">{release.format}</span>
+        </nav>
+
+        {/* Artist */}
+        <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">
+          {release.artist}
+        </p>
+
+        {/* Title */}
+        <h1 class="mt-2 font-display text-4xl leading-[1.05] tracking-tight md:text-5xl lg:text-6xl">
+          {release.title}
+        </h1>
+
+        {/* Format badge */}
+        <div class="mt-6 flex items-center gap-3">
+          <span class="inline-flex items-center gap-2 rounded-full border border-foreground/15 px-4 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18V5l12-2v13"></path>
+              <circle cx="6" cy="18" r="3"></circle>
+              <circle cx="18" cy="16" r="3"></circle>
+            </svg>
+            {release.format}
+          </span>
+        </div>
+
+        {/* Description */}
+        {release.description && release.description.length > 0 && (
+          <div class="mt-8 release-description">
+            <PortableText value={release.description} />
+          </div>
+        )}
+
+        {/* Divider */}
+        <div class="my-8 border-t border-foreground/10"></div>
+
+        {/* BUY BUTTON — starts disabled, JS will enable it */}
+        <button
+          id="buy-button"
+          data-id={release._id}
+          data-buy-url={release.buyUrl || ""}
+          disabled
+          class="buy-button inline-flex w-full items-center justify-center gap-3 rounded-full bg-foreground px-8 py-4 font-display text-sm uppercase tracking-wider text-background transition-all md:w-auto"
+        >
+          <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Verificando disponibilidad...
+        </button>
+
+        {/* Stock indicator — hidden until JS runs */}
+        <p id="stock-indicator" class="mt-3 text-center font-mono text-xs uppercase tracking-widest text-muted-foreground md:text-left" style="display: none;">
+        </p>
+
+        {/* Shipping note */}
+        <div class="mt-6 flex items-start gap-3 rounded-xl border border-foreground/10 bg-card p-4">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0 text-primary">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
+          <div>
+            <p class="text-sm font-medium">Envío nacional</p>
+            <p class="mt-0.5 text-xs text-muted-foreground">
+              Envío incluido en CDMX · Envío por paquetería al interior
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OTHER RELEASES -->
+  {otherReleases.length > 0 && (
+    <section class="border-t border-foreground/10">
+      <div class="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-20">
+        <h2 class="mb-10 font-display text-2xl md:text-3xl">También te puede gustar</h2>
+
+        <div class="grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-8">
+          {otherReleases.map((other: any) => (
+            <a href={`/releases/${other.slug}`} class="group flex flex-col">
+              <div class="aspect-square overflow-hidden rounded-xl border border-foreground/10 bg-muted">
+                {other.coverImage ? (
+                  <img
+                    src={urlFor(other.coverImage).width(400).height(400).format("webp").url()}
+                    alt={`${other.title} — ${other.artist}`}
+                    class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
+                    width="400"
+                    height="400"
+                  />
+                ) : (
+                  <div class="flex h-full w-full items-center justify-center">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="text-muted-foreground/30">
+                      <path d="M9 18V5l12-2v13"></path>
+                      <circle cx="6" cy="18" r="3"></circle>
+                      <circle cx="18" cy="16" r="3"></circle>
+                    </svg>
+                  </div>
+                )}
+              </div>
+              <div class="pt-4">
+                <p class="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{other.artist}</p>
+                <h3 class="mt-1 font-display text-lg leading-tight transition-colors group-hover:text-primary">{other.title}</h3>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</BaseLayout>
+
+<style>
+  /* Vinyl disc peeking behind the cover */
+  .vinyl-disc {
+    background: radial-gradient(
+      circle at center,
+      transparent 15%,
+      var(--foreground) 15.5%,
+      var(--foreground) 40%,
+      rgba(0, 0, 0, 0.3) 40.5%,
+      var(--foreground) 41%,
+      var(--foreground) 100%
+    );
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .release-cover:hover ~ .vinyl-disc {
+    transform: translateY(-50%) translateX(30px);
+  }
+
+  /* Sold out state */
+  .buy-button.is-sold-out {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: var(--muted);
+    color: var(--muted-foreground);
+  }
+
+  /* Available state */
+  .buy-button.is-available {
+    cursor: pointer;
+  }
+
+  .buy-button.is-available:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Release description (Portable Text) */
+  .release-description {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: var(--muted-foreground);
+  }
+
+  .release-description :global(p) {
+    margin-bottom: 1rem;
+  }
+
+  .release-description :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .release-description :global(strong) {
+    font-weight: 600;
+    color: var(--foreground);
+  }
+
+  .release-description :global(em) {
+    font-style: italic;
+  }
+
+  .release-description :global(a) {
+    color: var(--primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>
+
+<script define:vars={{ SANITY_PROJECT_ID, SANITY_DATASET }}>
+  const button = document.getElementById("buy-button")
+  const stockIndicator = document.getElementById("stock-indicator")
+
+  if (button) {
+    const documentId = button.getAttribute("data-id")
+    const buyUrl = button.getAttribute("data-buy-url")
+
+    // Fetch real-time stock from Sanity's public API
+    const query = encodeURIComponent(`*[_id == "${documentId}"][0]{stockCount}`)
+    const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v2021-10-21/data/query/${SANITY_DATASET}?query=${query}`
+
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        const stockCount = data?.result?.stockCount ?? 0
+
+        if (stockCount > 0) {
+          // ✅ In stock
+          button.removeAttribute("disabled")
+          button.classList.add("is-available")
+          button.innerHTML = `
+            Comprar Formato Físico
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          `
+
+          // Redirect on click
+          button.addEventListener("click", () => {
+            if (buyUrl) {
+              window.open(buyUrl, "_blank", "noopener,noreferrer")
+            }
+          })
+
+          // Stock indicator
+          if (stockIndicator) {
+            stockIndicator.style.display = "block"
+            if (stockCount <= 5) {
+              stockIndicator.innerHTML = `⚡ ¡Solo quedan ${stockCount} unidades!`
+              stockIndicator.style.color = "var(--accent)"
+            } else {
+              stockIndicator.innerHTML = `✓ ${stockCount} unidades disponibles`
+            }
+          }
+        } else {
+          // ❌ Sold out
+          button.classList.add("is-sold-out")
+          button.innerHTML = `Agotado`
+
+          if (stockIndicator) {
+            stockIndicator.style.display = "block"
+            stockIndicator.innerHTML = "Sin unidades disponibles por el momento"
+          }
+        }
+      })
+      .catch(() => {
+        // Error: fallback — block purchases to prevent ghost sales
+        button.classList.add("is-sold-out")
+        button.innerHTML = `Temporalmente no disponible`
+        if (stockIndicator) {
+          stockIndicator.style.display = "block"
+          stockIndicator.innerHTML = "Error verificando inventario"
+        }
+      })
+  }
+</script>
