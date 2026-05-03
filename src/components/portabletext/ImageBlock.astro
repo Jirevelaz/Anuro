@@ -33,14 +33,14 @@ const { node } = Astro.props
 <style>
   .full-bleed-figure {
     /*
-     * El truco: salirse del contenedor usando 50vw.
-     * width: 100vw hace que el elemento mida el ancho de la ventana.
-     * margin-left: -50vw + 50% lo centra correctamente.
-     * Funciona sin importar cuántos contenedores padre haya.
+     * El truco: salirse del contenedor usando 100vw.
+     * Limitamos el ancho máximo a 1200px para que no sea gigante en PC.
+     * margin-left: calc(50% - min(50vw, 600px)) lo centra correctamente.
      */
     width: 100vw;
-    margin-left: calc(50% - 50vw);
-    margin-right: calc(50% - 50vw);
+    max-width: 1200px;
+    margin-left: calc(50% - min(50vw, 600px));
+    margin-right: calc(50% - min(50vw, 600px));
     position: relative;
   }
 </style>

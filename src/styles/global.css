@@ -46,6 +46,7 @@
 @layer base {
   html {
     background-color: var(--background);
+    overflow-x: hidden;
   }
   body {
     font-family: var(--font-sans);
@@ -53,6 +54,7 @@
     background-color: var(--background);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    overflow-x: hidden;
   }
   ::selection {
     background-color: var(--foreground);

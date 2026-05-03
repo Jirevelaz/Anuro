@@ -38,8 +38,9 @@ const videoId = getYoutubeId(node.url)
 <style>
   .full-bleed-figure {
     width: 100vw;
-    margin-left: calc(50% - 50vw);
-    margin-right: calc(50% - 50vw);
+    max-width: 1200px;
+    margin-left: calc(50% - min(50vw, 600px));
+    margin-right: calc(50% - min(50vw, 600px));
     position: relative;
   }
 </style>
