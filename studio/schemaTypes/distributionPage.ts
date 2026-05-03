@@ -8,6 +8,11 @@ export const distributionPage = defineType({
   icon: DocumentIcon,
   fields: [
     defineField({
+      name: 'seo',
+      title: 'SEO & Redes Sociales',
+      type: 'seo',
+    }),
+    defineField({
       name: 'hero',
       title: 'Hero Section',
       type: 'object',

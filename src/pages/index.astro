@@ -66,9 +66,16 @@ const benefitsCards = benefitsData.cards || [
 // Distribution Teaser
 const distTeaser = homeSettings?.distributionTeaser || {}
 const distTeaserImage = distTeaser.image ? urlFor(distTeaser.image).width(800).height(600).url() : "/images/listening-bar.jpg"
+
+// SEO
+const seo = homeSettings?.seo || {}
 ---
 
-<BaseLayout>
+<BaseLayout
+  title={seo.metaTitle}
+  description={seo.metaDescription}
+  ogImage={seo.shareImage ? urlFor(seo.shareImage).width(1200).height(630).url() : undefined}
+>
   {/* COLLECTION NAV */}
   <CollectionNav />
 

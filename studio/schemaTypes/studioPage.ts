@@ -8,6 +8,11 @@ export const studioPage = defineType({
   icon: ControlsIcon,
   fields: [
     defineField({
+      name: 'seo',
+      title: 'SEO & Redes Sociales',
+      type: 'seo',
+    }),
+    defineField({
       name: 'hero',
       title: 'Hero Section',
       type: 'object',

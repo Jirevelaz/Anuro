@@ -56,9 +56,16 @@ const contact = siteSettings?.contactInfo || {}
       <p class="mt-2 text-sm text-background/70">
         Suscríbete y recibe primero las nuevas ediciones y preventas.
       </p>
-      <form class="mt-5 flex w-full max-w-sm overflow-hidden rounded-full border border-background/20 bg-background/5">
+      <form 
+        name="newsletter"
+        method="POST"
+        data-netlify="true"
+        class="mt-5 flex w-full max-w-sm overflow-hidden rounded-full border border-background/20 bg-background/5"
+      >
+        <input type="hidden" name="form-name" value="newsletter" />
         <input
           type="email"
+          name="email"
           required
           placeholder="tu@correo.com"
           class="flex-1 bg-transparent px-5 py-3 text-sm text-background outline-none placeholder:text-background/50"

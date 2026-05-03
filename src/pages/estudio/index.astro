@@ -19,6 +19,9 @@ const process = pageData?.process || {}
 const processSteps = process.steps || []
 const cta = pageData?.cta || {}
 
+// SEO
+const seo = pageData?.seo || {}
+
 // ── Helpers ──
 function formatPrice(price: number) {
   return new Intl.NumberFormat("es-MX", {
@@ -31,8 +34,9 @@ function formatPrice(price: number) {
 ---
 
 <BaseLayout
-  title="Estudio · ANURO"
-  description="Servicios de producción, mezcla y mastering a tarifa plana. Sin sorpresas, sin suscripciones."
+  title={seo.metaTitle || "Estudio · ANURO"}
+  description={seo.metaDescription || "Servicios de producción, mezcla y mastering a tarifa plana. Sin sorpresas, sin suscripciones."}
+  ogImage={seo.shareImage ? urlFor(seo.shareImage).width(1200).height(630).url() : undefined}
 >
   <!-- HERO -->
   <section class="relative border-b border-foreground/10">

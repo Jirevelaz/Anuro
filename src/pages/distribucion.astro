@@ -13,11 +13,15 @@ const useCases = pageData?.useCases || []
 
 const siteSettings = await sanityClient.fetch(`*[_type == "siteSettings"][0]`)
 const contact = siteSettings?.contactInfo || {}
+
+// SEO
+const seo = pageData?.seo || {}
 ---
 
 <BaseLayout
-  title="Distribución y Mayoreo · ANURO"
-  description="Curaduría y distribución mayorista de vinilos importados para tiendas, listening bars y coleccionistas."
+  title={seo.metaTitle || "Distribución y Mayoreo · ANURO"}
+  description={seo.metaDescription || "Curaduría y distribución mayorista de vinilos importados para tiendas, listening bars y coleccionistas."}
+  ogImage={seo.shareImage ? urlFor(seo.shareImage).width(1200).height(630).url() : undefined}
 >
   {/* HERO */}
   <section class="relative overflow-hidden border-b border-foreground/10 bg-foreground text-background">
@@ -122,13 +126,20 @@ const contact = siteSettings?.contactInfo || {}
         <h2 class="mt-3 font-display text-4xl leading-tight tracking-tight md:text-5xl">
           Haz aquí tu solicitud
         </h2>
-        <form class="mt-8 flex flex-col gap-5">
+        <form 
+          name="wholesale-request"
+          method="POST"
+          data-netlify="true"
+          class="mt-8 flex flex-col gap-5"
+        >
+          <input type="hidden" name="form-name" value="wholesale-request" />
           <label class="flex flex-col gap-2">
             <span class="font-mono text-xs uppercase tracking-widest text-muted-foreground">
               Tu nombre <span class="text-accent">*</span>
             </span>
             <input
               type="text"
+              name="name"
               required
               class="rounded-xl border border-foreground/15 bg-card px-4 py-3 text-base outline-none transition-colors focus:border-foreground"
             />
@@ -139,6 +150,7 @@ const contact = siteSettings?.contactInfo || {}
             </span>
             <input
               type="email"
+              name="email"
               required
               class="rounded-xl border border-foreground/15 bg-card px-4 py-3 text-base outline-none transition-colors focus:border-foreground"
             />
@@ -149,6 +161,7 @@ const contact = siteSettings?.contactInfo || {}
             </span>
             <input
               type="tel"
+              name="phone"
               class="rounded-xl border border-foreground/15 bg-card px-4 py-3 text-base outline-none transition-colors focus:border-foreground"
             />
           </label>
@@ -157,6 +170,7 @@ const contact = siteSettings?.contactInfo || {}
               Cuéntanos de tu proyecto
             </span>
             <textarea
+              name="message"
               rows="6"
               class="resize-none rounded-xl border border-foreground/15 bg-card px-4 py-3 text-base outline-none transition-colors focus:border-foreground"
             ></textarea>
