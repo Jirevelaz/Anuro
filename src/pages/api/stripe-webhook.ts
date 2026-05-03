@@ -72,11 +72,13 @@ export const POST: APIRoute = async ({ request }) => {
         return new Response('No releaseId found', { status: 400 });
       }
 
-      // 2. Decrement stock
-      await sanity.patch(releaseId).dec({ stockCount: 1 }).commit();
-
-      // 3. Create the order record for idempotency
-      await sanity.create({
+      // 2 & 3. Atomic Transaction: Decrement stock AND create order together
+      // Esto asegura que si falla uno, ninguno de los dos se aplique.
+      const transaction = sanity.transaction();
+      
+      transaction.patch(releaseId, (p) => p.dec({ stockCount: 1 }));
+      
+      transaction.create({
         _type: 'order',
         stripePaymentIntentId: paymentIntentId,
         releaseId: {
@@ -85,6 +87,8 @@ export const POST: APIRoute = async ({ request }) => {
         },
         status: 'completed'
       });
+
+      await transaction.commit();
 
       console.log(`Successfully processed order for release ${releaseId}`);
       return new Response('Success', { status: 200 });
