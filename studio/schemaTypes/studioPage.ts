@@ -19,7 +19,7 @@ export const studioPage = defineType({
       fields: [
         defineField({name: 'label', type: 'string', title: 'Etiqueta superior (Ej: Estudio de Producción)'}),
         defineField({name: 'title', type: 'string', title: 'Título principal (Ej: Tu disco,)'}),
-        defineField({name: 'highlight', type: 'string', title: 'Palabra resaltada en verde (Ej: tarifa plana)'}),
+        defineField({name: 'titleHighlight', type: 'string', title: 'Palabra resaltada en verde (Ej: tarifa plana)'}),
         defineField({name: 'description', type: 'text', title: 'Texto descriptivo largo', rows: 3}),
       ]
     }),

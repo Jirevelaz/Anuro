@@ -2,7 +2,7 @@ import {defineType, defineField, defineArrayMember} from 'sanity'
 import {HomeIcon} from '@sanity/icons'
 
 export const home = defineType({
-  name: 'homeSettings',
+  name: 'home',
   title: 'Página de Inicio',
   type: 'document',
   icon: HomeIcon,
