@@ -109,11 +109,21 @@ export const release = defineType({
         }),
     }),
     defineField({
+      name: 'stripePaymentUrl',
+      title: 'Stripe Payment URL',
+      type: 'url',
+      description: 'Enlace de pago generado en el Dashboard de Stripe (Payment Link)',
+      validation: (rule) =>
+        rule.uri({
+          scheme: ['http', 'https'],
+        }),
+    }),
+    defineField({
       name: 'stockCount',
       title: 'Stock Count',
       type: 'number',
       initialValue: 0,
-      validation: (rule) => rule.min(0),
+      validation: (rule) => rule.min(0).integer(),
     }),
   ],
   preview: {

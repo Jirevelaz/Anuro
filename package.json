@@ -11,11 +11,14 @@
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
+    "@astrojs/netlify": "^7.0.8",
     "@sanity/astro": "^3.3.1",
+    "@sanity/client": "^7.22.0",
     "@sanity/image-url": "^2.1.1",
     "@tailwindcss/vite": "^4.1.13",
     "astro": "^5.13.2",
     "astro-portabletext": "^0.13.0",
+    "stripe": "^22.1.0",
     "tailwindcss": "^4.1.13",
     "typescript": "^5.7.3"
   }

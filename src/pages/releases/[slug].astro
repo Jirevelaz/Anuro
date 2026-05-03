@@ -337,17 +337,12 @@ const SANITY_DATASET = "production"
         }
       })
       .catch(() => {
-        // Error: fallback — link directly if buyUrl exists
-        if (buyUrl) {
-          button.removeAttribute("disabled")
-          button.classList.add("is-available")
-          button.innerHTML = `Ver disponibilidad`
-          button.addEventListener("click", () => {
-            window.open(buyUrl, "_blank", "noopener,noreferrer")
-          })
-        } else {
-          button.classList.add("is-sold-out")
-          button.innerHTML = `No disponible`
+        // Error: fallback — block purchases to prevent ghost sales
+        button.classList.add("is-sold-out")
+        button.innerHTML = `Temporalmente no disponible`
+        if (stockIndicator) {
+          stockIndicator.style.display = "block"
+          stockIndicator.innerHTML = "Error verificando inventario"
         }
       })
   }
