@@ -1,6 +1,12 @@
 ---
 import { Image } from "astro:assets"
+import { sanityClient } from "sanity:client"
+
 const year = new Date().getFullYear()
+
+const siteSettings = await sanityClient.fetch(`*[_type == "siteSettings"][0]`)
+const social = siteSettings?.socialLinks || {}
+const contact = siteSettings?.contactInfo || {}
 ---
 
 <footer class="relative mt-24 border-t border-foreground/15 bg-foreground text-background">
@@ -27,33 +33,40 @@ const year = new Date().getFullYear()
         Cuidamos los discos como cuida una rana las hojas: con paciencia, con paciencia y mucha música.
       </p>
       <div class="flex gap-2">
-        {
-          [
-            { label: "Instagram", icon: "instagram" },
-            { label: "Twitter", icon: "twitter" },
-            { label: "Facebook", icon: "facebook" },
-            { label: "Spotify", icon: "spotify" },
-          ].map((s) => (
-            <a
-              href="/"
-              aria-label={s.label}
-              class="grid h-10 w-10 place-items-center rounded-full border border-background/20 text-background/80 transition-colors hover:border-primary hover:text-primary"
-            >
-              <span class="font-mono text-[10px] uppercase">{s.icon[0]}</span>
-            </a>
-          ))
-        }
+        {social.instagram && (
+          <a href={social.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="grid h-10 w-10 place-items-center rounded-full border border-background/20 text-background/80 transition-colors hover:border-primary hover:text-primary">
+            <span class="font-mono text-[10px] uppercase">I</span>
+          </a>
+        )}
+        {social.facebook && (
+          <a href={social.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="grid h-10 w-10 place-items-center rounded-full border border-background/20 text-background/80 transition-colors hover:border-primary hover:text-primary">
+            <span class="font-mono text-[10px] uppercase">F</span>
+          </a>
+        )}
+        {social.youtube && (
+          <a href={social.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube" class="grid h-10 w-10 place-items-center rounded-full border border-background/20 text-background/80 transition-colors hover:border-primary hover:text-primary">
+            <span class="font-mono text-[10px] uppercase">Y</span>
+          </a>
+        )}
       </div>
     </div>
 
-    <div>
+    <div id="newsletter-container">
       <h3 class="font-display text-lg uppercase tracking-tight">Boletín</h3>
-      <p class="mt-2 text-sm text-background/70">
+      <p id="newsletter-text" class="mt-2 text-sm text-background/70">
         Suscríbete y recibe primero las nuevas ediciones y preventas.
       </p>
-      <form class="mt-5 flex w-full max-w-sm overflow-hidden rounded-full border border-background/20 bg-background/5">
+      <form 
+        id="newsletter-form"
+        name="newsletter"
+        method="POST"
+        data-netlify="true"
+        class="mt-5 flex w-full max-w-sm overflow-hidden rounded-full border border-background/20 bg-background/5"
+      >
+        <input type="hidden" name="form-name" value="newsletter" />
         <input
           type="email"
+          name="email"
           required
           placeholder="tu@correo.com"
           class="flex-1 bg-transparent px-5 py-3 text-sm text-background outline-none placeholder:text-background/50"
@@ -65,7 +78,35 @@ const year = new Date().getFullYear()
           Enviar
         </button>
       </form>
+      <p id="newsletter-success" class="hidden mt-4 text-sm font-semibold text-accent">
+        ¡Gracias! Te has suscrito correctamente.
+      </p>
     </div>
+
+    <script is:inline>
+      const newsForm = document.getElementById('newsletter-form');
+      const newsSuccess = document.getElementById('newsletter-success');
+      const newsText = document.getElementById('newsletter-text');
+
+      if (newsForm) {
+        newsForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const formData = new FormData(newsForm);
+          
+          fetch('/', {
+            method: 'POST',
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams(formData).toString()
+          })
+          .then(() => {
+            newsForm.classList.add('hidden');
+            newsText.classList.add('hidden');
+            newsSuccess.classList.remove('hidden');
+          })
+          .catch((error) => console.error('Error:', error));
+        });
+      }
+    </script>
 
     <div class="grid grid-cols-2 gap-8 text-sm">
       <div>
@@ -80,8 +121,8 @@ const year = new Date().getFullYear()
       <div>
         <h3 class="mb-4 font-display text-lg uppercase tracking-tight">Contacto</h3>
         <ul class="space-y-2.5 text-background/70">
-          <li>WhatsApp · 871 1856718</li>
-          <li>info@anuro.club</li>
+          {contact.whatsapp && <li>WhatsApp · {contact.whatsapp}</li>}
+          {contact.email && <li>{contact.email}</li>}
           <li>Ciudad de México</li>
         </ul>
       </div>

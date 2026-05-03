@@ -6,7 +6,7 @@ import netlify from "@astrojs/netlify"
 
 export default defineConfig({
   output: "static",
-  adapter: netlify(),
+  adapter: process.env.NETLIFY || process.env.NODE_ENV === "production" ? netlify() : undefined,
   integrations: [
     sanity({
       projectId: "05wa67le",
@@ -15,7 +15,7 @@ export default defineConfig({
     }),
   ],
   vite: {
-    plugins: [tailwind()],
+    plugins: [/** @type {any} */ (tailwind())],
     server: {
       host: true,
       allowedHosts: true,

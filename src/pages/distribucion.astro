@@ -1,25 +1,40 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro"
+import { sanityClient } from "sanity:client"
+import { urlFor } from "../lib/sanity"
+
+const pageData = await sanityClient.fetch(`*[_type == "distributionPage"][0]`)
+const hero = pageData?.hero || {}
+const features = pageData?.features || []
+const testimonial = pageData?.testimonial || {}
+const requirements = pageData?.requirements || {}
+const requirementsList = requirements.list || []
+const useCases = pageData?.useCases || []
+
+const siteSettings = await sanityClient.fetch(`*[_type == "siteSettings"][0]`)
+const contact = siteSettings?.contactInfo || {}
+
+// SEO
+const seo = pageData?.seo || {}
 ---
 
 <BaseLayout
-  title="Distribución y Mayoreo · ANURO"
-  description="Curaduría y distribución mayorista de vinilos importados para tiendas, listening bars y coleccionistas."
+  title={seo.metaTitle || "Distribución y Mayoreo · ANURO"}
+  description={seo.metaDescription || "Curaduría y distribución mayorista de vinilos importados para tiendas, listening bars y coleccionistas."}
+  ogImage={seo.shareImage ? urlFor(seo.shareImage).width(1200).height(630).url() : undefined}
 >
   {/* HERO */}
   <section class="relative overflow-hidden border-b border-foreground/10 bg-foreground text-background">
     <div class="paper-grain absolute inset-0 opacity-40 mix-blend-overlay pointer-events-none"></div>
     <div class="relative mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24">
       <p class="font-mono text-xs uppercase tracking-[0.22em] text-background/60">
-        B2B · Curaduría
+        {hero.label || "B2B · Curaduría"}
       </p>
       <h1 class="mt-3 max-w-4xl font-display text-5xl leading-[0.95] tracking-tight md:text-7xl">
-        Distribución <span class="text-accent">Mayorista</span>
+        {hero.title || "Distribución Mayorista"}
       </h1>
       <p class="mt-6 max-w-2xl text-background/75 md:text-lg">
-        Soluciones de importación directa para tiendas, espacios de escucha y
-        colecciones de alto volumen. Acceso al catálogo global, precios
-        competitivos, sin intermediarios.
+        {hero.description || "Soluciones de importación directa para tiendas, espacios de escucha y colecciones de alto volumen. Acceso al catálogo global, precios competitivos, sin intermediarios."}
       </p>
     </div>
   </section>
@@ -28,36 +43,19 @@ import BaseLayout from "../layouts/BaseLayout.astro"
   <section class="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-20">
     <div class="grid gap-10 md:grid-cols-2 md:gap-x-16 md:gap-y-14">
       {
-        [
-          {
-            t: "Catálogo sin fronteras",
-            d: "Acceso directo a las principales discográficas y sellos independientes del mundo. Lanzamientos exclusivos, ediciones de colección y catálogo de fondo en constante actualización.",
-            n: "01",
-          },
-          {
-            t: "Rentabilidad y escalabilidad",
-            d: "Optimizamos costos eliminando intermediarios. Al ser el enlace directo entre la distribución internacional y el cliente final, ofrecemos precios pensados para tu margen.",
-            n: "02",
-          },
-          {
-            t: "Logística de importación integral",
-            d: "Nos encargamos de la complejidad operativa: consolidación de pedidos con distribuidores en EE.UU., importación y entrega final en México con rastreo continuo.",
-            n: "03",
-          },
-          {
-            t: "Curaduría a medida",
-            d: "Cada espacio suena distinto. Asesoría personalizada para seleccionar los títulos que mejor se adapten a la atmósfera de tu bar, cafetería o nicho de mercado.",
-            n: "04",
-          },
-        ].map((feat) => (
-          <article class="flex gap-5">
-            <span class="font-display text-4xl text-accent leading-none">{feat.n}</span>
-            <div>
-              <h2 class="font-display text-2xl leading-tight md:text-3xl">{feat.t}</h2>
-              <p class="mt-3 text-muted-foreground leading-relaxed">{feat.d}</p>
-            </div>
-          </article>
-        ))
+        features.length > 0 ? (
+          features.map((feat: any) => (
+            <article class="flex gap-5">
+              <span class="font-display text-4xl text-accent leading-none">{feat.number}</span>
+              <div>
+                <h2 class="font-display text-2xl leading-tight md:text-3xl">{feat.title}</h2>
+                <p class="mt-3 text-muted-foreground leading-relaxed">{feat.description}</p>
+              </div>
+            </article>
+          ))
+        ) : (
+          <p class="text-muted-foreground col-span-full text-center">Cargando características...</p>
+        )
       }
     </div>
   </section>
@@ -68,15 +66,11 @@ import BaseLayout from "../layouts/BaseLayout.astro"
       <blockquote class="mx-auto max-w-4xl text-center">
         <p class="font-display text-2xl leading-snug text-balance md:text-4xl md:leading-[1.15]">
           <span class="text-accent">“</span>
-          En ANURO nos mantenemos a la vanguardia de las tendencias musicales
-          globales para potenciar tu oferta. Somos el socio estratégico para el
-          abastecimiento de inventario en conciertos, la curaduría de
-          atmósferas en bares y cafeterías, o el impulso para coleccionistas
-          que buscan completar su acervo.
+          {testimonial.quote || "En ANURO nos mantenemos a la vanguardia de las tendencias musicales globales para potenciar tu oferta."}
           <span class="text-accent">”</span>
         </p>
         <footer class="mt-6 font-mono text-xs uppercase tracking-[0.22em] text-muted-foreground">
-          — Equipo ANURO
+          {testimonial.author || "— Equipo ANURO"}
         </footer>
       </blockquote>
     </div>
@@ -90,65 +84,63 @@ import BaseLayout from "../layouts/BaseLayout.astro"
           Cómo trabajamos
         </p>
         <h2 class="mt-3 font-display text-4xl leading-tight tracking-tight md:text-5xl">
-          Requisitos y condiciones
+          {requirements.title || "Requisitos y condiciones"}
         </h2>
         <ul class="mt-8 space-y-6 text-sm leading-relaxed text-foreground">
-          <li class="flex gap-4 border-t border-foreground/10 pt-6">
-            <span class="font-display text-3xl text-accent leading-none">·</span>
-            <span>
-              <strong class="font-display text-base">Apertura de cuenta:</strong>{" "}
-              a partir de 10 unidades (pueden ser títulos variados).
-            </span>
-          </li>
-          <li class="flex gap-4 border-t border-foreground/10 pt-6">
-            <span class="font-display text-3xl text-accent leading-none">·</span>
-            <span>
-              <strong class="font-display text-base">Ideal para:</strong>{" "}
-              tiendas minoristas, organizadores de eventos, conceptos
-              gastronómicos/culturales con curaduría musical, bares y cafeterías
-              de escucha, y coleccionistas que buscan volumen y precio.
-            </span>
-          </li>
-          <li class="flex gap-4 border-t border-foreground/10 pt-6">
-            <span class="font-display text-3xl text-accent leading-none">·</span>
-            <span>
-              <strong class="font-display text-base">Proceso:</strong>{" "}
-              al recibir tu lista, enviamos una propuesta formal con precios
-              preferenciales y tiempos estimados de entrega. Todos los títulos
-              están sujetos a existencia y disponibilidad.
-            </span>
-          </li>
+          {
+            requirementsList.map((item: any) => (
+              <li class="flex gap-4 border-t border-foreground/10 pt-6">
+                <span class="font-display text-3xl text-accent leading-none">·</span>
+                <span>
+                  <strong class="font-display text-base">{item.boldText}</strong>{" "}
+                  {item.description}
+                </span>
+              </li>
+            ))
+          }
         </ul>
         <div class="mt-10 flex flex-col gap-3 rounded-2xl border border-foreground/10 bg-card p-6 text-sm">
-          <p class="flex items-center gap-3">
-            <span class="grid h-8 w-8 place-items-center rounded-full bg-accent text-accent-foreground">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92Z"></path></svg>
-            </span>
-            <span><strong class="font-display text-base">WhatsApp</strong> · 871 1856718</span>
-          </p>
-          <p class="flex items-center gap-3">
-            <span class="grid h-8 w-8 place-items-center rounded-full bg-accent text-accent-foreground">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-10 5L2 7"></path></svg>
-            </span>
-            <span>info@anuro.club / mayoreo@anuro.club</span>
-          </p>
+          {contact.whatsapp && (
+            <p class="flex items-center gap-3">
+              <span class="grid h-8 w-8 place-items-center rounded-full bg-accent text-accent-foreground">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92Z"></path></svg>
+              </span>
+              <span><strong class="font-display text-base">WhatsApp</strong> · {contact.whatsapp}</span>
+            </p>
+          )}
+          {contact.email && (
+            <p class="flex items-center gap-3">
+              <span class="grid h-8 w-8 place-items-center rounded-full bg-accent text-accent-foreground">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-10 5L2 7"></path></svg>
+              </span>
+              <span>{contact.email} {contact.wholesaleEmail ? `/ ${contact.wholesaleEmail}` : ''}</span>
+            </p>
+          )}
         </div>
       </div>
 
-      <div>
+      <div id="form-container">
         <p class="font-mono text-xs uppercase tracking-[0.22em] text-muted-foreground">
           Formulario
         </p>
         <h2 class="mt-3 font-display text-4xl leading-tight tracking-tight md:text-5xl">
           Haz aquí tu solicitud
         </h2>
-        <form class="mt-8 flex flex-col gap-5">
+        <form 
+          id="wholesale-form"
+          name="wholesale-request"
+          method="POST"
+          data-netlify="true"
+          class="mt-8 flex flex-col gap-5"
+        >
+          <input type="hidden" name="form-name" value="wholesale-request" />
           <label class="flex flex-col gap-2">
             <span class="font-mono text-xs uppercase tracking-widest text-muted-foreground">
               Tu nombre <span class="text-accent">*</span>
             </span>
             <input
               type="text"
+              name="name"
               required
               class="rounded-xl border border-foreground/15 bg-card px-4 py-3 text-base outline-none transition-colors focus:border-foreground"
             />
@@ -159,6 +151,7 @@ import BaseLayout from "../layouts/BaseLayout.astro"
             </span>
             <input
               type="email"
+              name="email"
               required
               class="rounded-xl border border-foreground/15 bg-card px-4 py-3 text-base outline-none transition-colors focus:border-foreground"
             />
@@ -169,6 +162,7 @@ import BaseLayout from "../layouts/BaseLayout.astro"
             </span>
             <input
               type="tel"
+              name="phone"
               class="rounded-xl border border-foreground/15 bg-card px-4 py-3 text-base outline-none transition-colors focus:border-foreground"
             />
           </label>
@@ -177,6 +171,7 @@ import BaseLayout from "../layouts/BaseLayout.astro"
               Cuéntanos de tu proyecto
             </span>
             <textarea
+              name="message"
               rows="6"
               class="resize-none rounded-xl border border-foreground/15 bg-card px-4 py-3 text-base outline-none transition-colors focus:border-foreground"
             ></textarea>
@@ -189,7 +184,35 @@ import BaseLayout from "../layouts/BaseLayout.astro"
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
           </button>
         </form>
+        <div id="success-message" class="hidden mt-8 rounded-2xl bg-accent/10 p-8 text-center border border-accent/20">
+          <h3 class="font-display text-2xl text-accent">¡Solicitud enviada!</h3>
+          <p class="mt-2 text-muted-foreground">Nos pondremos en contacto contigo muy pronto para platicar de tu proyecto.</p>
+        </div>
       </div>
+
+      <script is:inline>
+        const form = document.getElementById('wholesale-form');
+        const container = document.getElementById('form-container');
+        const successMessage = document.getElementById('success-message');
+
+        if (form) {
+          form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            
+            fetch('/', {
+              method: 'POST',
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+              body: new URLSearchParams(formData).toString()
+            })
+            .then(() => {
+              form.classList.add('hidden');
+              successMessage.classList.remove('hidden');
+            })
+            .catch((error) => alert('Hubo un error al enviar: ' + error));
+          });
+        }
+      </script>
     </div>
   </section>
 
@@ -197,35 +220,19 @@ import BaseLayout from "../layouts/BaseLayout.astro"
   <section class="mx-auto max-w-7xl px-4 pb-20 md:px-8">
     <div class="grid gap-6 md:grid-cols-3">
       {
-        [
-          {
-            t: "Listening Bar",
-            d: "Suministro extenso de discos para la colección de bar ubicado en Ciudad de México.",
-            img: "/images/listening-bar.jpg",
-          },
-          {
-            t: "Showroom",
-            d: "Selección curada para la apertura de la casa de exhibición de marca de tenis en CDMX.",
-            img: "/images/showroom.jpg",
-          },
-          {
-            t: "Colección Personal",
-            d: "Pedido personalizado para coleccionistas que buscan crecer su acervo de manera acelerada.",
-            img: "/images/personal-collection.jpg",
-          },
-        ].map((c) => (
+        useCases.map((c: any) => (
           <article class="group overflow-hidden rounded-3xl border border-foreground/10 bg-card">
             <div class="aspect-[4/3] overflow-hidden">
               <img
-                src={c.img}
-                alt={c.t}
+                src={c.image ? urlFor(c.image).width(600).height(450).url() : "/images/listening-bar.jpg"}
+                alt={c.title}
                 class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                 loading="lazy"
               />
             </div>
             <div class="p-6">
-              <h3 class="font-display text-2xl">{c.t}</h3>
-              <p class="mt-2 text-sm text-muted-foreground leading-relaxed">{c.d}</p>
+              <h3 class="font-display text-2xl">{c.title}</h3>
+              <p class="mt-2 text-sm text-muted-foreground leading-relaxed">{c.description}</p>
             </div>
           </article>
         ))
@@ -233,3 +240,4 @@ import BaseLayout from "../layouts/BaseLayout.astro"
     </div>
   </section>
 </BaseLayout>
+
