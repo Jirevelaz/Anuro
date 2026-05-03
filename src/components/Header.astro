@@ -9,8 +9,8 @@ const isActive = (href: string) =>
 
 <header class="sticky top-0 z-40 border-b border-foreground/10 bg-background/85 backdrop-blur-md">
   <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-3 md:px-8 md:py-4">
-    <a href="/" class="flex items-center gap-3" aria-label="ANURO — inicio">
-      <span class="relative block h-12 w-12 md:h-14 md:w-14">
+    <a href="/" class="flex items-center gap-2 md:gap-3" aria-label="ANURO — inicio">
+      <span class="relative block h-10 w-10 md:h-14 md:w-14">
         <Image
           src="/images/muro-logo.png"
           alt="ANURO logo"
@@ -20,9 +20,9 @@ const isActive = (href: string) =>
           loading="eager"
         />
       </span>
-      <span class="hidden flex-col leading-none sm:flex">
-        <span class="font-display text-2xl tracking-tight">ANURO</span>
-        <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+      <span class="flex flex-col leading-none">
+        <span class="font-display text-xl tracking-tight md:text-2xl">ANURO</span>
+        <span class="hidden font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground sm:block">
           Sello Discográfico Independiente · CDMX
         </span>
       </span>
@@ -54,14 +54,24 @@ const isActive = (href: string) =>
       }
     </nav>
 
-    <div class="flex items-center gap-1">
+    <div class="flex items-center gap-0.5 md:gap-1">
       <button
         type="button"
         aria-label="Buscar"
-        class="grid h-10 w-10 place-items-center rounded-full text-foreground transition-colors hover:bg-foreground/5"
+        class="hidden h-10 w-10 place-items-center rounded-full text-foreground transition-colors hover:bg-foreground/5 sm:grid"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
       </button>
+      
+      <button
+        type="button"
+        id="mobile-menu-open"
+        class="grid h-10 w-10 place-items-center rounded-full text-foreground transition-colors hover:bg-foreground/5 lg:hidden"
+        aria-label="Abrir menú"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+
       <a
         href="/estudio"
         aria-label="Estudio"
@@ -69,22 +79,86 @@ const isActive = (href: string) =>
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
       </a>
-      <button
-        type="button"
-        aria-label="Wishlist"
-        class="relative grid h-10 w-10 place-items-center rounded-full text-foreground transition-colors hover:bg-foreground/5"
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"></path></svg>
-        <span class="absolute -right-0.5 -top-0.5 grid h-4 w-4 place-items-center rounded-full bg-accent text-[10px] font-semibold text-accent-foreground">0</span>
-      </button>
+      
       <button
         type="button"
         aria-label="Carrito"
-        class="relative ml-1 grid h-10 w-10 place-items-center rounded-full text-foreground transition-colors hover:bg-foreground/5"
+        class="relative ml-0.5 grid h-10 w-10 place-items-center rounded-full text-foreground transition-colors hover:bg-foreground/5 md:ml-1"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path></svg>
         <span class="absolute -right-0.5 -top-0.5 grid h-4 w-4 place-items-center rounded-full bg-foreground text-[10px] font-semibold text-background">0</span>
       </button>
     </div>
-  </div>
 </header>
+
+<!-- Mobile Menu Overlay -->
+<div id="mobile-menu" class="fixed inset-0 z-50 translate-x-full transition-transform duration-300 ease-in-out lg:hidden">
+  <div id="mobile-menu-backdrop" class="absolute inset-0 bg-background/80 backdrop-blur-sm"></div>
+  <nav class="absolute right-0 top-0 h-full w-full max-w-sm border-l border-foreground/10 bg-background p-8 shadow-2xl flex flex-col">
+    <div class="flex items-center justify-between mb-12">
+      <span class="font-display text-2xl tracking-tight">ANURO</span>
+      <button id="mobile-menu-close" class="grid h-10 w-10 place-items-center rounded-full hover:bg-foreground/5">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    
+    <div class="flex flex-col gap-6">
+      {
+        [
+          { href: "/bitacora", label: "Bitácora" },
+          { href: "/collections/disco-del-mes", label: "Tienda" },
+          { href: "/distribucion", label: "Distribución" },
+          { href: "/estudio", label: "Estudio" },
+        ].map((item) => (
+          <a
+            href={item.href}
+            class:list={[
+              "font-display text-4xl tracking-tight transition-colors",
+              isActive(item.href) ? "text-primary" : "text-foreground hover:text-primary"
+            ]}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="mt-auto pt-20">
+      <p class="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-4">Síguenos</p>
+      <div class="flex gap-4">
+        <a href="#" class="text-foreground hover:text-primary">IG</a>
+        <a href="#" class="text-foreground hover:text-primary">FB</a>
+        <a href="#" class="text-foreground hover:text-primary">YT</a>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<script>
+  function initMenu() {
+    const openBtn = document.getElementById('mobile-menu-open');
+    const closeBtn = document.getElementById('mobile-menu-close');
+    const backdrop = document.getElementById('mobile-menu-backdrop');
+    const menu = document.getElementById('mobile-menu');
+
+    if (!openBtn || !closeBtn || !menu || !backdrop) return;
+
+    function open() {
+      menu.classList.remove('translate-x-full');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function close() {
+      menu.classList.add('translate-x-full');
+      document.body.style.overflow = '';
+    }
+
+    openBtn.addEventListener('click', open);
+    closeBtn.addEventListener('click', close);
+    backdrop.addEventListener('click', close);
+  }
+
+  // Init on load and after swaps
+  initMenu();
+  document.addEventListener('astro:after-swap', initMenu);
+</script>
