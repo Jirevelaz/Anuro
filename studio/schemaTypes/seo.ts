@@ -2,29 +2,29 @@ import {defineField, defineType} from 'sanity'
 
 export default defineType({
   name: 'seo',
-  title: 'SEO & Social',
+  title: 'SEO y Redes Sociales',
   type: 'object',
   fields: [
     defineField({
       name: 'metaTitle',
-      title: 'Meta Título',
+      title: 'Título para Google',
       type: 'string',
-      description: 'Título que aparece en Google (recomendado < 60 caracteres)',
-      validation: Rule => Rule.max(60).warning('Demasiado largo para Google')
+      description: 'Este es el título azul que sale en los resultados de búsqueda. Trata de que sea corto y directo.',
+      validation: Rule => Rule.max(60).warning('Si es más largo de 60 caracteres, Google podría cortarlo.')
     }),
     defineField({
       name: 'metaDescription',
-      title: 'Meta Descripción',
+      title: 'Descripción para Google',
       type: 'text',
       rows: 3,
-      description: 'Resumen que aparece en Google (recomendado < 160 caracteres)',
-      validation: Rule => Rule.max(160).warning('Demasiado largo para Google')
+      description: 'Es el texto gris que sale debajo del título en Google. Resume de qué trata esta página.',
+      validation: Rule => Rule.max(160).warning('Si es más largo de 160 caracteres, Google lo cortará.')
     }),
     defineField({
       name: 'shareImage',
-      title: 'Imagen para compartir (Open Graph)',
+      title: 'Imagen para compartir (WhatsApp / Facebook)',
       type: 'image',
-      description: 'Imagen que se ve al pegar el link en WhatsApp, Facebook, etc. (1200x630px recomendado)',
+      description: 'Esta es la imagen que aparece automáticamente cuando pegas el link en un chat o en redes sociales.',
       options: {
         hotspot: true,
       },

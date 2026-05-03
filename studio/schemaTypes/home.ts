@@ -3,106 +3,73 @@ import {HomeIcon} from '@sanity/icons'
 
 export const home = defineType({
   name: 'homeSettings',
-  title: 'Home Settings',
+  title: 'Página de Inicio',
   type: 'document',
   icon: HomeIcon,
   fields: [
     defineField({
       name: 'seo',
-      title: 'SEO & Redes Sociales',
+      title: 'Configuración para Google y Redes sociales',
       type: 'seo',
-      group: 'seo',
     }),
     defineField({
       name: 'mainHero',
-      title: 'Hero Principal (Arriba)',
+      title: 'Información del Disco del Mes (Arriba)',
       type: 'object',
+      description: 'Configura el disco que aparece destacado al principio de la página.',
       fields: [
-        defineField({name: 'title', type: 'string', title: 'Título principal', description: 'Ej: Pon una rana en tu tornamesa.'}),
-        defineField({name: 'description', type: 'text', title: 'Descripción'}),
+        defineField({name: 'title', type: 'string', title: 'Título Principal (Ej: Pon una rana...)'}),
+        defineField({name: 'heroLabel', type: 'string', title: 'Etiqueta superior (Ej: Disco del Mes)'}),
+        defineField({name: 'heroArtist', type: 'string', title: 'Artista (Ej: Robber Robber)'}),
+        defineField({name: 'heroTitle', type: 'string', title: 'Título del álbum'}),
+        defineField({name: 'heroDescription', type: 'text', title: 'Breve descripción del disco', rows: 3}),
         defineField({
-          name: 'stats',
-          title: 'Estadísticas',
+          name: 'heroBullets',
+          title: 'Puntos clave del disco',
           type: 'array',
-          of: [
-            defineArrayMember({
-              type: 'object',
-              fields: [
-                defineField({name: 'value', type: 'string', title: 'Valor (Ej: +8)'}),
-                defineField({name: 'label', type: 'string', title: 'Etiqueta (Ej: años curando)'}),
-              ]
-            })
-          ]
-        })
+          description: 'Añade pequeñas frases descriptivas (Ej: Edición de 500 copias)',
+          of: [defineArrayMember({type: 'string', title: 'Punto destacado'})]
+        }),
       ]
     }),
     defineField({
-      name: 'heroLabel',
-      title: 'Hero Label (Subtítulo)',
-      type: 'string',
-      description: 'Ejemplo: Disco del Mes · Mayo',
-    }),
-    defineField({
-      name: 'heroArtist',
-      title: 'Hero Artist (Artista)',
-      type: 'string',
-      description: 'Ejemplo: Robber Robber',
-    }),
-    defineField({
-      name: 'heroTitle',
-      title: 'Hero Title (Título del disco)',
-      type: 'string',
-      description: 'Ejemplo: Two Wheels Move The Soul',
-    }),
-    defineField({
-      name: 'heroDescription',
-      title: 'Hero Description (Descripción corta)',
-      type: 'text',
-    }),
-    defineField({
-      name: 'heroBullets',
-      title: 'Hero Bullets (Puntos destacados)',
-      type: 'array',
-      of: [defineArrayMember({type: 'string'})],
-      description: 'Ejemplo: Edición de 500 copias numeradas',
-    }),
-    defineField({
       name: 'heroImage',
-      title: 'Hero Image (Imagen principal)',
+      title: 'Imagen Destacada del Disco',
       type: 'image',
+      description: 'Sube la portada o una foto artística del disco.',
       options: {
         hotspot: true,
       },
     }),
     defineField({
       name: 'heroBadge',
-      title: 'Hero Badge (Etiqueta sobre la imagen)',
+      title: 'Pequeño círculo sobre la imagen',
       type: 'string',
       description: 'Ejemplo: #84 · 2026',
     }),
     defineField({
       name: 'heroLink',
-      title: 'Hero Link (Enlace del botón principal)',
+      title: '¿A dónde lleva el botón?',
       type: 'string',
-      description: 'Ejemplo: /collections/disco-del-mes o /releases/slug-del-disco',
+      description: 'Escribe /releases/nombre-del-disco o un link externo.',
     }),
     defineField({
       name: 'benefits',
-      title: 'Beneficios (Por qué ANURO)',
+      title: 'Sección de Beneficios (Por qué ANURO)',
       type: 'object',
       fields: [
-        defineField({name: 'title', type: 'string', title: 'Título principal', description: 'Ej: Más que vinilos, una experiencia'}),
+        defineField({name: 'title', type: 'string', title: 'Título de la sección'}),
         defineField({
           name: 'cards',
-          title: 'Tarjetas de Beneficios',
+          title: 'Tarjetas de beneficios',
           type: 'array',
           of: [
             defineArrayMember({
               type: 'object',
               fields: [
-                defineField({name: 'title', type: 'string', title: 'Título'}),
-                defineField({name: 'description', type: 'text', title: 'Descripción'}),
-                defineField({name: 'icon', type: 'string', title: 'SVG Path (Dejar el default si no sabes cambiarlo)'})
+                defineField({name: 'title', type: 'string', title: 'Título corto'}),
+                defineField({name: 'description', type: 'text', title: 'Descripción breve', rows: 2}),
+                defineField({name: 'icon', type: 'string', title: 'Código del Icono (SVG)', description: 'Solo para expertos. Si no sabes, déjalo igual.'})
               ]
             })
           ]
@@ -111,11 +78,11 @@ export const home = defineType({
     }),
     defineField({
       name: 'distributionTeaser',
-      title: 'Banner de Distribución (Abajo)',
+      title: 'Invitación a Distribución (Final de página)',
       type: 'object',
       fields: [
-        defineField({name: 'title', type: 'string', title: 'Título principal'}),
-        defineField({name: 'description', type: 'text', title: 'Descripción'}),
+        defineField({name: 'title', type: 'string', title: 'Título llamativo'}),
+        defineField({name: 'description', type: 'text', title: 'Descripción breve'}),
         defineField({name: 'image', type: 'image', title: 'Imagen de fondo', options: {hotspot: true}}),
       ]
     })
@@ -123,7 +90,7 @@ export const home = defineType({
   preview: {
     prepare() {
       return {
-        title: 'Configuración de Inicio (Home)',
+        title: 'Contenido de la Página de Inicio',
       }
     },
   },

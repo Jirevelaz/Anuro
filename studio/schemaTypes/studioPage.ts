@@ -3,24 +3,24 @@ import {ControlsIcon} from '@sanity/icons'
 
 export const studioPage = defineType({
   name: 'studioPage',
-  title: 'Studio Page',
+  title: 'Página de Estudio',
   type: 'document',
   icon: ControlsIcon,
   fields: [
     defineField({
       name: 'seo',
-      title: 'SEO & Redes Sociales',
+      title: 'Configuración para Google y Redes sociales',
       type: 'seo',
     }),
     defineField({
       name: 'hero',
-      title: 'Hero Section',
+      title: 'Sección de Portada (Arriba)',
       type: 'object',
       fields: [
-        defineField({name: 'label', type: 'string', title: 'Etiqueta (Ej: Estudio de Producción)'}),
+        defineField({name: 'label', type: 'string', title: 'Etiqueta superior (Ej: Estudio de Producción)'}),
         defineField({name: 'title', type: 'string', title: 'Título principal (Ej: Tu disco,)'}),
-        defineField({name: 'titleHighlight', type: 'string', title: 'Palabra destacada (Ej: tarifa plana)'}),
-        defineField({name: 'description', type: 'text', title: 'Descripción'}),
+        defineField({name: 'highlight', type: 'string', title: 'Palabra resaltada en verde (Ej: tarifa plana)'}),
+        defineField({name: 'description', type: 'text', title: 'Texto descriptivo largo', rows: 3}),
       ]
     }),
     defineField({
@@ -29,20 +29,18 @@ export const studioPage = defineType({
       type: 'object',
       fields: [
         defineField({name: 'label', type: 'string', title: 'Etiqueta (Ej: Así trabajamos)'}),
-        defineField({name: 'title', type: 'string', title: 'Título principal'}),
-        defineField({name: 'titleHighlight', type: 'string', title: 'Palabra subrayada (Ej: simple)'}),
+        defineField({name: 'title', type: 'string', title: 'Título de la sección'}),
         defineField({
           name: 'steps',
-          title: 'Pasos',
+          title: 'Pasos del proceso',
           type: 'array',
           of: [
             defineArrayMember({
               type: 'object',
               fields: [
-                defineField({name: 'stepNumber', type: 'string', title: 'Número (Ej: 01)'}),
-                defineField({name: 'title', type: 'string', title: 'Título'}),
-                defineField({name: 'description', type: 'text', title: 'Descripción'}),
-                defineField({name: 'icon', type: 'string', title: 'SVG Path'})
+                defineField({name: 'title', type: 'string', title: 'Nombre del paso'}),
+                defineField({name: 'description', type: 'text', title: 'Descripción del paso', rows: 3}),
+                defineField({name: 'icon', type: 'string', title: 'Código del Icono (SVG)', description: 'Opcional. Dejar vacío para el icono por defecto.'}),
               ]
             })
           ]
@@ -51,12 +49,12 @@ export const studioPage = defineType({
     }),
     defineField({
       name: 'cta',
-      title: 'Call To Action (Final de página)',
+      title: 'Sección de Contacto Final',
       type: 'object',
       fields: [
         defineField({name: 'label', type: 'string', title: 'Etiqueta (Ej: ¿Listo para empezar?)'}),
         defineField({name: 'title', type: 'string', title: 'Título principal'}),
-        defineField({name: 'description', type: 'text', title: 'Descripción'}),
+        defineField({name: 'description', type: 'text', title: 'Texto de invitación'}),
         defineField({name: 'buttonText', type: 'string', title: 'Texto del botón'}),
       ]
     })
@@ -64,7 +62,7 @@ export const studioPage = defineType({
   preview: {
     prepare() {
       return {
-        title: 'Página de Estudio',
+        title: 'Contenido de la Página de Estudio',
       }
     },
   },
